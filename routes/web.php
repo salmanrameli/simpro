@@ -71,6 +71,23 @@ Route::get('proyek_progress/{id}/destroy', [
     'uses' => 'ProyekProgressController@destroy'
 ]);
 
+Route::resource('proyek_tugas', 'ProyekTugasController');
+
+Route::get('proyek_tugas/{id}/kerjakan', [
+    'as' => 'proyek_tugas.kerjakan',
+    'uses' => 'ProyekTugasController@kerjakan'
+]);
+
+Route::get('proyek_tugas/{id}/pindah_kanan', [
+    'as' => 'proyek_tugas.pindah_kanan',
+    'uses' => 'ProyekTugasController@pindah_kanan'
+]);
+
+Route::get('proyek_tugas/{id}/pindah_kiri', [
+    'as' => 'proyek_tugas.pindah_kiri',
+    'uses' => 'ProyekTugasController@pindah_kiri'
+]);
+
 Route::group(['middleware' => 'checkRole:1'], function () {
     Route::resource('administrator', 'AdministratorController');
 
@@ -114,5 +131,6 @@ Route::get('dokumen/{id}-{kode}/destroy', [
     'as' => 'dokumen.destroy',
     'uses' => 'DokumenController@destroy'
 ]);
+
 
 

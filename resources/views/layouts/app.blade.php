@@ -77,7 +77,7 @@
                 </div>
             </div>
         </nav>
-        <div class="banner"></div>
+        <div class="banner-navbar"></div>
 
         <div class="container">
             <div class="row">

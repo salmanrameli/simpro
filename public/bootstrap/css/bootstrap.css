@@ -6855,13 +6855,30 @@ button.close {
   padding-right: 1px;
   /*padding-left: 100px;*/
 }
-.banner {
+.banner-navbar {
   background-image: url("../img/banner.png");
   height:5px;
   background-size: cover;
   margin-bottom:20px;
 }
-.left-border
+.banner {
+  background-image: url("../img/banner.png");
+  height:5px;
+  background-size: cover;
+}
+.left-border-blue
 {
-  border-left:solid 5px black;
+  border-left:solid 3px #00C4FB;
+}
+.left-border-purple
+{
+  border-left:solid 3px #A62CA6;
+}
+.left-border-orange
+{
+  border-left:solid 3px #FDAA00;
+}
+.left-border-green
+{
+  border-left:solid 3px #75D900;
 }

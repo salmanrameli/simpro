@@ -55,32 +55,6 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                <h3><span class="glyphicon glyphicon-stats"></span> Perkembangan Proyek:</h3>
-                @if($progress > 70)
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ $progress }}"
-                             aria-valuemin="0" aria-valuemax="100" style="width:{{ $progress }}%">
-                            {{ $progress }}%
-                        </div>
-                    </div>
-                @elseif(($progress > 30) && ($progress < 71))
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="{{ $progress }}"
-                             aria-valuemin="0" aria-valuemax="100" style="width:{{ $progress }}%">
-                            {{ $progress }}%
-                        </div>
-                    </div>
-                @else
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{ $progress }}"
-                             aria-valuemin="0" aria-valuemax="100" style="width:{{ $progress }}%">
-                            {{ $progress }}%
-                        </div>
-                    </div>
-                @endif
-
-                <br>
-
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#progress"><span class="glyphicon glyphicon-stats"></span> Progress</a></li>
                     <li><a data-toggle="tab" href="#anggota"><span class="glyphicon glyphicon-user"></span> Anggota Proyek</a></li>
@@ -91,51 +65,49 @@
                 <div class="tab-content">
                     <div id="progress" class="tab-pane fade in active">
                         <br>
-                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Progress Baru</button>
+                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Buat Tugas</button>
                         <div id="progress_baru" class="modal fade" role="dialog">
                             <div class="modal-dialog">
-
                                 <!-- Modal content-->
                                 <div class="modal-content">
-                                    {{ Form::open(['route' => 'proyek_progress.store']) }}
+                                    {{ Form::open(['route' => 'proyek_tugas.store']) }}
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Progress Proyek</h4>
                                     </div>
                                     <div class="modal-body">
 
+                                        <div class="form-group hidden">
+                                            {{ Form::text('kode_proyek', $kode, ['class' => 'form-control']) }}
+                                        </div>
 
-                                        <div class="form-group{{ $errors->has('kode_proyek') ? ' has-error' : '' }} hidden">
-                                            <label for="kode_proyek" class="col-md-4 control-label">Kode Proyek</label>
-
-                                            <div class="col-md-6">
-                                                <input id="kode_proyek" type="text" class="form-control" name="kode_proyek" value="{{ $kode }}" required>
-
-                                                @if ($errors->has('kode_proyek'))
-                                                    <span class="help-block">
-                                                        <strong>{{ $errors->first('kode_proyek') }}</strong>
-                                                    </span>
-                                                @endif
-                                            </div>
+                                        <div class="form-group hidden">
+                                            {{ Form::text('id_pembuat', \Illuminate\Support\Facades\Auth::id(), ['class' => 'form-control']) }}
                                         </div>
 
                                         <div class="form-group">
-                                            {{ Form::label('kegiatan', 'Kegiatan', ['class' => 'control-label']) }}
-                                            {{ Form::text('kegiatan', null, ['class' => 'form-control']) }}
+                                            {{ Form::label('nama_tugas', 'Nama Tugas', ['class' => 'control-label']) }}
+                                            {{ Form::text('nama_tugas', null, ['class' => 'form-control']) }}
                                         </div>
 
-                                        <div class="form-group">
-                                            {{ Form::label('keterangan', 'Keterangan', ['class' => 'control-label']) }}
-                                            {{ Form::textarea('keterangan', null, ['class' => 'form-control']) }}
+                                        <div class="scrollable-extended form-group">
+                                            <div class="control-label"><b>Ditugaskan kepada (opsional):</b></div>
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                @foreach($anggotas as $anggota)
+                                                    <tr>
+                                                        <td>{{ Form::checkbox('anggota[]', $anggota->id) }}</td>
+                                                        <td>{{ $anggota->id }}</td>
+                                                        <td>{{ $anggota->name }}</td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
 
-                                        <div class="form-group">
-                                            {{ Form::label('progress', 'Progress', ['class' => 'control-label']) }}
-                                            {{ Form::text('progress', null, ['class' => 'form-control']) }}
-                                        </div>
                                     </div>
                                     <div class="modal-footer">
-                                        {{ Form::submit('Masukkan Progress', ['class' => 'btn btn-primary']) }}
+                                        {{ Form::submit('Buat Tugas', ['class' => 'btn btn-primary']) }}
                                         {{ Form::close() }}
                                     </div>
                                 </div>
@@ -145,57 +117,117 @@
 
                         <h3>Update Terbaru</h3>
                         <br>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Nama Pegawai</th>
-                                    <th>Kegiatan</th>
-                                    <th>Progress</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($proyeks as $proyek)
-                                @if($proyek->progress > '70')
-                                    <tr class="success">
-                                        <td>{{ date('d F, Y', strtotime($proyek->created_at)) }}</td>
-                                        <td>{{ $proyek->name }}</td>
-                                        <td>{{ $proyek->kegiatan }}</td>
-                                        <td>{{ $proyek->progress }}%</td>
-                                        <td>
-                                            <a href="{{ route('proyek_progress.destroy', ['id' => $proyek->id]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus progress?')"><span class="glyphicon glyphicon-trash"></span></a>
-                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
-                                        </td>
-                                    </tr>
-                                    @elseif(($proyek->progress > 30) && ($proyek->progress < 70))
-                                    <tr class="warning">
-                                        <td>{{ date('d F, Y', strtotime($proyek->created_at)) }}</td>
-                                        <td>{{ $proyek->name }}</td>
-                                        <td>{{ $proyek->kegiatan }}</td>
-                                        <td>{{ $proyek->progress }}%</td>
-                                        <td>
-                                            <a href="{{ route('proyek_progress.destroy', ['id' => $proyek->id]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus progress?')"><span class="glyphicon glyphicon-trash"></span></a>
-                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
-                                        </td>
-                                    </tr>
-                                    @else
-                                    <tr class="danger">
-                                        <td>{{ date('d F, Y', strtotime($proyek->created_at)) }}</td>
-                                        <td>{{ $proyek->name }}</td>
-                                        <td>{{ $proyek->kegiatan }}</td>
-                                        <td>{{ $proyek->progress }}%</td>
-                                        <td>
-                                            <a href="{{ route('proyek_progress.destroy', ['id' => $proyek->id]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus progress?')"><span class="glyphicon glyphicon-trash"></span></a>
-                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
-                                        </td>
-                                    </tr>
-                                    @endif
-                            @endforeach
-                            </tbody>
-                        </table>
+                        <div class="col-lg-3">
+                            <div class="panel-heading" style="background-color: #00C4FB; color: white">
+                                To-Do
+                            </div>
+                            <br>
+                            @foreach($barus as $baru)
+                            <div class="panel panel-default">
 
-                        {{ $proyeks->links() }}
+                                    <div class="panel-body left-border-blue">
+                                        {{ $baru->nama_tugas }}
+                                        <br>
+                                        <br>
+                                        <ul class="list-unstyled">
+                                            <li class="pull-right"><a href="{{ route('proyek_tugas.kerjakan', $baru->id) }}" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right"></span></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="panel-footer left-border-blue clearfix">
+                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a href="#">Page 1-1</a></li>
+                                                <li><a href="#">Page 1-2</a></li>
+                                                <li><a href="#">Page 1-3</a></li>
+                                            </ul>
+                                        </li>
+                                    </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="panel-heading" style="background-color: #A62CA6; color: white">
+                                In-Progress
+                            </div>
+                            <br>
+                            @foreach($ongoings as $ongoing)
+                            <div class="panel panel-default">
+                                    <div class="panel-body left-border-purple">
+                                        {{ $ongoing->nama_tugas }}
+                                        <br>
+                                        <br>
+                                        <ul class="list-unstyled">
+                                            <li class="pull-right"><a href="{{ route('proyek_tugas.pindah_kanan', $ongoing->id) }}" data-toggle="tooltip" title="Pindah ke Request Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
+                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $ongoing->id) }}" data-toggle="tooltip" title="Kembalikan ke To Do"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="panel-footer left-border-purple clearfix">
+                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a href="#">Page 1-1</a></li>
+                                                <li><a href="#">Page 1-2</a></li>
+                                                <li><a href="#">Page 1-3</a></li>
+                                            </ul>
+                                        </li>
+                                    </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="panel-heading" style="background-color: #FDAA00; color: white">
+                                Request Selesai
+                            </div>
+                            <br>
+                            @foreach($requests as $request)
+                            <div class="panel panel-default">
+                                    <div class="panel-body left-border-orange">
+                                        {{ $request->nama_tugas }}
+                                        <br>
+                                        <br>
+                                        <ul class="list-unstyled">
+                                            <li class="pull-right"><a href="{{ route('proyek_tugas.pindah_kanan', $request->id) }}" data-toggle="tooltip" title="Setujui Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
+                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $request->id) }}" data-toggle="tooltip" title="Tolak"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="panel-footer left-border-orange clearfix">
+                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a href="#">Page 1-1</a></li>
+                                                <li><a href="#">Page 1-2</a></li>
+                                                <li><a href="#">Page 1-3</a></li>
+                                            </ul>
+                                        </li>
+                                    </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="panel-heading" style="background-color: #75D900; color: white">
+                                Selesai
+                            </div>
+                            <br>
+                            @foreach($selesais as $selesai)
+                            <div class="panel panel-default">
+                                    <div class="panel-body left-border-green">
+                                        {{ $selesai->nama_tugas }}
+                                        <br>
+                                        <br>
+                                        <ul class="list-unstyled">
+                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $selesai->id) }}" data-toggle="tooltip" title="Kembalikan ke Request Selesai"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="panel-footer left-border-green clearfix">
+                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a href="#">Page 1-1</a></li>
+                                                <li><a href="#">Page 1-2</a></li>
+                                                <li><a href="#">Page 1-3</a></li>
+                                            </ul>
+                                        </li>
+                                    </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
 
                     <div id="anggota" class="tab-pane fade">
@@ -293,9 +325,9 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
-        <br>
+    </div>
+    <br>
     <br>
 @endsection
 

@@ -188,11 +188,13 @@ class ProyekController extends Controller
          * Pemilik proyek dapat melihat semua informasi yang dimasukkan oleh anggota proyek.
          * Anggota proyek hanya dapat melihat informasi yang dimasukkan oleh sendiri.
          */
-        $uid = Auth::id();
-
         $paginate = 10;
 
+        $uid = Auth::id();
+
         $pemilik_proyek = DB::table('proyek')->where('kode_proyek', $id)->value('pemilik_proyek');
+
+        $tugas_baru = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '0']])->latest('updated_at')->get();
 
         $deskripsi_proyek = DB::table('proyek')->join('users', 'proyek.pemilik_proyek', '=', 'users.id')->where('proyek.kode_proyek', $id)->first();
 
@@ -202,76 +204,37 @@ class ProyekController extends Controller
 
         if($pemilik_proyek == $uid)
         {
-            $progress = Proyek_Progress::whereRaw('created_at IN (select MAX(created_at) FROM proyek_progress WHERE proyek_progress.kode_proyek="'. $id . '" GROUP BY kegiatan)')->select('progress')->get()->toArray();
+            $tugas_ongoing = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '1']])->latest('updated_at')->get();
 
-            $count = Proyek_Progress::whereRaw('created_at IN (select MAX(created_at) FROM proyek_progress WHERE proyek_progress.kode_proyek="'.$id.'" GROUP BY kegiatan)')->select('progress')->count();
+            $tugas_request = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '2']])->latest('updated_at')->get();
 
-            $sum = 0;
-
-            if($count != 0)
-            {
-                for($i=0; $i< $count; $i++)
-                {
-                    foreach ($progress[$i] as $progres)
-                    {
-                        $sum += $progres;
-                    }
-                }
-
-                $sum = floor($sum / $count);
-            }
-
-            $proyek = DB::table('proyek_progress')
-                ->join('users', 'proyek_progress.id_pegawai', '=', 'users.id')
-                ->select('proyek_progress.*', 'users.name')
-                ->where('proyek_progress.kode_proyek', $id)
-                ->orderBy('proyek_progress.updated_at', 'desc')->simplePaginate($paginate);
+            $tugas_selesai = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '3']])->latest('updated_at')->get();
 
             return view('proyek.show-owner')
-                ->with('proyeks', $proyek)
                 ->with('deskripsi', $deskripsi_proyek)
+                ->with('barus', $tugas_baru)
+                ->with('ongoings', $tugas_ongoing)
+                ->with('requests', $tugas_request)
+                ->with('selesais', $tugas_selesai)
                 ->with('kode', $id)
-                ->with('progress', $sum)
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen);
         }
         else
         {
-            $progress = Proyek_Progress::whereRaw('created_at IN (select MAX(created_at) FROM proyek_progress WHERE proyek_progress.kode_proyek="'. $id . '" GROUP BY kegiatan)')
-                ->select('progress')
-                ->get()->toArray();
+            $tugas_ongoing = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '1'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
-            $count = Proyek_Progress::whereRaw('created_at IN (select MAX(created_at) FROM proyek_progress WHERE proyek_progress.kode_proyek="'.$id.'" GROUP BY kegiatan)')
-                ->where('id_pegawai', Auth::id())
-                ->select('progress')->count();
+            $tugas_request = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '2'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
-            $sum = 0;
-
-            if($count != 0)
-            {
-                for($i=0; $i< $count; $i++)
-                {
-                    foreach ($progress[$i] as $progres)
-                    {
-                        $sum += $progres;
-                    }
-                }
-
-                $sum = floor($sum / $count);
-            }
-
-            $proyek = DB::table('proyek_progress')
-                ->join('users', 'proyek_progress.id_pegawai', '=', 'users.id')
-                ->select('proyek_progress.*', 'users.name')
-                ->where([['proyek_progress.kode_proyek', $id], ['proyek_progress.kode_proyek', $id], ['proyek_progress.id_pegawai', $uid]])
-                ->orderBy('proyek_progress.updated_at', 'desc')
-                ->simplePaginate($paginate);
+            $tugas_selesai = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '3'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
             return view('proyek.show')
-                ->with('proyeks', $proyek)
                 ->with('deskripsi', $deskripsi_proyek)
+                ->with('barus', $tugas_baru)
+                ->with('ongoings', $tugas_ongoing)
+                ->with('requests', $tugas_request)
+                ->with('selesais', $tugas_selesai)
                 ->with('kode', $id)
-                ->with('progress', $sum)
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen);
         }
