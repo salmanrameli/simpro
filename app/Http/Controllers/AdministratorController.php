@@ -101,7 +101,7 @@ class AdministratorController extends Controller
              */
         $log = new Log();
 
-        $log->id = Auth::id();
+        $log->id_pegawai = Auth::id();
         $log->data = "mengubah profil";
         $log->save();
 
