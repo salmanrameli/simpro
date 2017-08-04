@@ -369,26 +369,21 @@ class ProyekController extends Controller
         return view('proyek.hapus_anggota')->with('users', $anggota)->with('kode', $id);
     }
 
-    public function hapus_anggota_proyek(Request $request, $id)
+    public function hapus_anggota_proyek($id, $kode)
     {
         /*
          * Menghapus anggota yang dipilih dari proyek.
          */
-        $names = $request->get('anggota');
+        DB::table('proyek_anggota')->where([['kode_proyek', '=', $id], ['id_pegawai', $kode]])->delete();
 
-        foreach ($names as $name)
-        {
-            DB::table('proyek_anggota')->where([['kode_proyek', '=', $id], ['id_pegawai', $name]])->delete();
+        /*
+         * Mencatat kegiatan yang dilakukan ke tabel log.
+         */
+        $log = new Log();
 
-            /*
-             * Mencatat kegiatan yang dilakukan ke tabel log.
-             */
-            $log = new Log();
-
-            $log->id_pegawai = Auth::id();
-            $log->data = "menghapus pegawai " . $name . " dari proyek " . $id;
-            $log->save();
-        }
+        $log->id_pegawai = Auth::id();
+        $log->data = "menghapus pegawai " . $kode . " dari proyek " . $id;
+        $log->save();
 
         $message = "Anggota berhasil dihapus";
 

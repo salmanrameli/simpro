@@ -57,7 +57,7 @@ Route::get('proyek/belum_selesai/{id}', [
 
 Route::post('proyek/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('proyek.tambah_anggota_proyek')->uses('ProyekController@tambah_anggota_proyek');
 
-Route::post('proyek/{id}/hapus_anggota', function(\Illuminate\Http\Request $request) {})->name('proyek.hapus_anggota')->uses('ProyekController@hapus_anggota_proyek');
+Route::get('proyek/{id}/hapus_anggota/{kode}')->name('proyek.hapus_anggota')->uses('ProyekController@hapus_anggota_proyek');
 
 Route::resource('proyek_progress', 'ProyekProgressController');
 

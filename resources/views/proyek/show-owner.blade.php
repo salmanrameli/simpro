@@ -45,15 +45,6 @@
                     </tbody>
                 </table>
                 <a href="{{ route('proyek.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Proyek</a>
-                {{--<div class="dropdown pull-right">--}}
-                    {{--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Pengaturan--}}
-                        {{--<span class="caret"></span></button>--}}
-                    {{--<ul class="dropdown-menu">--}}
-                        {{--<li><a href="{{ route('proyek.tambah_anggota', ['id' => $kode]) }}">Tambah Anggota Proyek</a></li>--}}
-                        {{--<li><a href="{{ route('proyek.anggota', ['id' => $kode]) }}">Hapus Anggota Proyek</a></li>--}}
-                        {{--<li class="divider"></li>--}}
-                    {{--</ul>--}}
-                {{--</div>--}}
                 @if($deskripsi->tanggal_realisasi != '0000-00-00')
                     <a href="{{ route('proyek.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai proyek belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Proyek Belum Selesai</a>
                 @endif
@@ -157,7 +148,6 @@
                     </div>
                     <div id="anggota" class="tab-pane fade">
                         <br>
-                        <a href="{{ route('proyek.anggota', ['id' => $kode]) }}" class="btn btn-danger pull-right">Hapus Anggota Proyek</a>
                         <a href="{{ route('proyek.tambah_anggota', ['id' => $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota Proyek</a>
                         <h3>Anggota Proyek</h3>
                         <br>
@@ -168,6 +158,7 @@
                                     <th>Nama</th>
                                     <th>E-Mail</th>
                                     <th>Telepon</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,6 +168,13 @@
                                     <td>{{ $anggota->name }}</td>
                                     <td>{{ $anggota->email }}</td>
                                     <td>{{ $anggota->telepon }}</td>
+                                    <td>
+                                        @if($anggota->id == \Illuminate\Support\Facades\Auth::id())
+                                            <a href="{{ route('proyek.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right disabled" onclick="return confirm('Hapus anggota dari proyek?')" data-toggle="tooltip" title="Anda pemilik proyek ini"><span class="glyphicon glyphicon-trash"></span></a>
+                                            @else
+                                            <a href="{{ route('proyek.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus anggota dari proyek?')"><span class="glyphicon glyphicon-trash"></span></a>
+                                            @endif
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -248,4 +246,9 @@
 @endsection
 
 @section('js')
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
     @endsection()

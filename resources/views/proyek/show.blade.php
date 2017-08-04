@@ -108,7 +108,9 @@
                                         <td>{{ $proyek->name }}</td>
                                         <td>{{ $proyek->kegiatan }}</td>
                                         <td>{{ $proyek->progress }}%</td>
-                                        <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        <td>
+                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        </td>
                                     </tr>
                                 @elseif(($proyek->progress > 30) && ($proyek->progress < 70))
                                     <tr class="warning">
@@ -116,7 +118,9 @@
                                         <td>{{ $proyek->name }}</td>
                                         <td>{{ $proyek->kegiatan }}</td>
                                         <td>{{ $proyek->progress }}%</td>
-                                        <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        <td>
+                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        </td>
                                     </tr>
                                 @else
                                     <tr class="danger">
@@ -124,7 +128,9 @@
                                         <td>{{ $proyek->name }}</td>
                                         <td>{{ $proyek->kegiatan }}</td>
                                         <td>{{ $proyek->progress }}%</td>
-                                        <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        <td>
+                                            <a href="{{ route('proyek_progress.edit', ['id' => $proyek->id]) }}" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah</a>
+                                        </td>
                                     </tr>
                                 @endif
                             @endforeach
@@ -211,7 +217,7 @@
                                         </td>
                                         @else
                                         <td>
-                                            <a onclick="return confirm('Hapus dokumen dari proyek?')" href="" class="disabled btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a class="disabled btn btn-danger pull-right" data-toggle="tooltip" title="Anda bukan pemilik dokumen ini"><span class="glyphicon glyphicon-trash"></span></a>
                                             <a href="{{ route('dokumen.download', [$dokumen->id, $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-save-file"></span> Download</a>
                                         </td>
                                     @endif
@@ -229,3 +235,11 @@
     <br>
     <br>
 @endsection
+
+@section('js')
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    @endsection
