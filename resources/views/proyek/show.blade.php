@@ -87,7 +87,57 @@
                 <div class="tab-content">
                     <div id="progress" class="tab-pane fade in active">
                         <br>
-                        <a href="{{ route('proyek_progress.create', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Progress Baru</a>
+                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Progress Baru</button>
+                        <div id="progress_baru" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    {{ Form::open(['route' => 'proyek_progress.store']) }}
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Progress Proyek</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+
+                                        <div class="form-group{{ $errors->has('kode_proyek') ? ' has-error' : '' }} hidden">
+                                            <label for="kode_proyek" class="col-md-4 control-label">Kode Proyek</label>
+
+                                            <div class="col-md-6">
+                                                <input id="kode_proyek" type="text" class="form-control" name="kode_proyek" value="{{ $kode }}" required>
+
+                                                @if ($errors->has('kode_proyek'))
+                                                    <span class="help-block">
+                                                        <strong>{{ $errors->first('kode_proyek') }}</strong>
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            {{ Form::label('kegiatan', 'Kegiatan', ['class' => 'control-label']) }}
+                                            {{ Form::text('kegiatan', null, ['class' => 'form-control']) }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            {{ Form::label('keterangan', 'Keterangan', ['class' => 'control-label']) }}
+                                            {{ Form::textarea('keterangan', null, ['class' => 'form-control']) }}
+                                        </div>
+
+                                        <div class="form-group">
+                                            {{ Form::label('progress', 'Progress', ['class' => 'control-label']) }}
+                                            {{ Form::text('progress', null, ['class' => 'form-control']) }}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        {{ Form::submit('Masukkan Progress', ['class' => 'btn btn-primary']) }}
+                                        {{ Form::close() }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         <h3>Update Terbaru</h3>
                         <br>
                         <table class="table table-striped">

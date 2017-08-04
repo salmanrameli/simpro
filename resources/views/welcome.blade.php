@@ -79,23 +79,9 @@
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
-                    <img src="{{ asset('bootstrap/img/bri-sat.jpg') }}" style="display: inline-block; padding-left: 23px" class="pull-left" href="{{ route('home') }}">
-                </div>
+                <img src="{{ asset('bootstrap/img/bri-sat.jpg') }}" style="display: inline-block; padding-left: 23px" class="pull-left" href="{{ route('home') }}">
 
                 <div class="links">
-                    {{--<div class="col-lg-12">--}}
-                        {{--<a href="{{ url('/register') }}" class="btn btn-info btn-lg btn-block">Register</a>--}}
-                    {{--</div>--}}
-                    {{--<br>--}}
-                    {{--<div class="col-lg-6">--}}
-                        {{--<a href="{{ url('/login') }}" class="btn btn-info btn-lg btn-block">Login</a>--}}
-                    {{--</div>--}}
-                    {{--<a href="https://laravel.com/docs">Documentation</a>--}}
-                    {{--<a href="https://laracasts.com">Laracasts</a>--}}
-                    {{--<a href="https://laravel-news.com">News</a>--}}
-                    {{--<a href="https://forge.laravel.com">Forge</a>--}}
-                    {{--<a href="https://github.com/laravel/laravel">GitHub</a>--}}
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 
@@ -127,20 +113,10 @@
                             </div>
                         </div>
 
-                        {{--<div class="form-group">--}}
-                            {{--<div class="col-md-6 col-md-offset-4">--}}
-                                {{--<div class="checkbox">--}}
-                                    {{--<label>--}}
-                                        {{--<input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me--}}
-                                    {{--</label>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    Login
+                                    <span class="glyphicon glyphicon-log-in"></span> Login
                                 </button>
                                 {{--<a class="btn btn-link" href="{{ route('password.request') }}">--}}
                                     {{--Forgot Your Password?--}}
