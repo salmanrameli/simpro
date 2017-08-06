@@ -32,34 +32,15 @@ class ProyekController extends Controller
          */
         $paginate = 10;
 
-        $proyek_berlangsung = DB::table('proyek_anggota')
+        $proyek = DB::table('proyek_anggota')
             ->join('proyek', 'proyek_anggota.kode_proyek', '=', 'proyek.kode_proyek')
-            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.pemilik_proyek', 'proyek.tanggal_mulai')
-            ->where([['proyek_anggota.id_pegawai', Auth::id()], ['proyek.tanggal_realisasi', '0000-00-00']])
+            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_target_selesai')
+            ->where('proyek_anggota.id_pegawai', Auth::id())
             ->latest()
             ->simplePaginate($paginate);
-
-        $jumlah_berlangsung = count($proyek_berlangsung);
-
-        $proyek_selesai = DB::table('proyek_anggota')
-            ->join('proyek', 'proyek_anggota.kode_proyek', '=', 'proyek.kode_proyek')
-            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_realisasi')
-            ->where([['proyek_anggota.id_pegawai', Auth::id()], ['proyek.tanggal_realisasi', '<>', '0000-00-00']])
-            ->latest()
-            ->simplePaginate($paginate);
-
-        $jumlah_selesai = count($proyek_selesai);
-
-        $kode = DB::table('proyek_anggota')->where('id_pegawai', Auth::id())->value('kode_proyek');
-
-        $detail_proyek = DB::table('proyek')->where('kode_proyek', $kode)->first();
 
         return view('proyek.index')
-            ->with('proyek_bs', $proyek_berlangsung)
-            ->with('proyek_ss', $proyek_selesai)
-            ->with('detail_proyek', $detail_proyek)
-            ->witH('jumlah_berlangsung', $jumlah_berlangsung)
-            ->with('jumlah_selesai', $jumlah_selesai);
+            ->with('proyeks', $proyek);
     }
 
     /**
