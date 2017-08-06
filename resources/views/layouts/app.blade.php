@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
+    <link rel="shortcut icon" href="{{ asset('bootstrap/img/bri.ico') }}">
 </head>
 <body>
     <div id="app">
