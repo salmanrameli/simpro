@@ -136,9 +136,7 @@
                                     <div class="panel-footer left-border-blue clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="#">Page 1-1</a></li>
-                                                <li><a href="#">Page 1-2</a></li>
-                                                <li><a href="#">Page 1-3</a></li>
+                                                <li><a href="{{ route('proyek_tugas.destroy', $baru->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>
@@ -164,9 +162,7 @@
                                     <div class="panel-footer left-border-purple clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="#">Page 1-1</a></li>
-                                                <li><a href="#">Page 1-2</a></li>
-                                                <li><a href="#">Page 1-3</a></li>
+                                                <li><a href="{{ route('proyek_tugas.destroy', $ongoing->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>
@@ -192,9 +188,7 @@
                                     <div class="panel-footer left-border-orange clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="#">Page 1-1</a></li>
-                                                <li><a href="#">Page 1-2</a></li>
-                                                <li><a href="#">Page 1-3</a></li>
+                                                <li><a href="{{ route('proyek_tugas.destroy', $request->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>
@@ -213,15 +207,13 @@
                                         <br>
                                         <br>
                                         <ul class="list-unstyled">
-                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $selesai->id) }}" data-toggle="tooltip" title="Kembalikan ke Request Selesai"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
+                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $selesai->id) }}" data-toggle="tooltip" title="Kembalikan ke Request Selesai" onclick="return confirm('Kembalikan ke In-Progress?')"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
                                         </ul>
                                     </div>
                                     <div class="panel-footer left-border-green clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="#">Page 1-1</a></li>
-                                                <li><a href="#">Page 1-2</a></li>
-                                                <li><a href="#">Page 1-3</a></li>
+                                                <li><a href="{{ route('proyek_tugas.destroy', $selesai->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>

@@ -88,6 +88,11 @@ Route::get('proyek_tugas/{id}/pindah_kiri', [
     'uses' => 'ProyekTugasController@pindah_kiri'
 ]);
 
+Route::get('proyek_tugas/{id}/destroy', [
+    'as' => 'proyek_tugas.destroy',
+    'uses' => 'ProyekTugasController@destroy'
+]);
+
 Route::group(['middleware' => 'checkRole:1'], function () {
     Route::resource('administrator', 'AdministratorController');
 
