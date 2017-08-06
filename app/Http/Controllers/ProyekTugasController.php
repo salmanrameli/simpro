@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ProyekTugasController extends Controller
 {
@@ -113,7 +114,11 @@ class ProyekTugasController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('proyek_tugas')->where('id', $id)->delete();
+
+        Session::flash('message', 'Tugas berhasil dihapus');
+
+        return redirect()->back();
     }
 
     public function kerjakan($id)
@@ -138,7 +143,18 @@ class ProyekTugasController extends Controller
 
     public function pindah_kiri($id)
     {
-        DB::table('proyek_tugas')->where('id', $id)->decrement('status');
+        $value = DB::table('proyek_tugas')->where('id', $id)->value('status');
+
+        if($value == '3')
+        {
+            DB::table('proyek_tugas')->where('id', $id)->decrement('status');
+
+            DB::table('proyek_tugas')->where('id', $id)->decrement('status');
+        }
+        else
+        {
+            DB::table('proyek_tugas')->where('id', $id)->decrement('status');
+        }
 
         DB::table('proyek_tugas')->where('id', $id)->update(['updated_at' => Carbon::now()]);
 
