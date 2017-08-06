@@ -115,7 +115,7 @@ class ProyekController extends Controller
             $proyek->nama_proyek = $request->nama_proyek;
             $proyek->pemilik_proyek = $request->user()->id;
             $proyek->deskripsi_proyek = $request->deskripsi_proyek;
-            $proyek->tanggal_mulai = Carbon::now()->toDateString();
+            $proyek->tanggal_mulai = $request->tanggal_mulai;
             $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
             $proyek->tanggal_realisasi = '0';
             $proyek->save();

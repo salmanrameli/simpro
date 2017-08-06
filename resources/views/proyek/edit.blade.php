@@ -16,18 +16,18 @@
             </div>
 
             <div class="form-group">
-                {{ Form::label('kode_proyek', 'ID Proyek', ['class' => 'control-label']) }}
+                {{ Form::label('kode_proyek', 'ID Kegiatan', ['class' => 'control-label']) }}
                 {{ Form::text('kode_proyek', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
-                {{ Form::label('nama_proyek', 'Nama Proyek', ['class' => 'control-label']) }}
+                {{ Form::label('nama_proyek', 'Nama Kegiatan', ['class' => 'control-label']) }}
                 {{ Form::text('nama_proyek', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
-                {{ Form::label('deskripsi_proyek', 'Deskripsi Proyek', ['class' => 'control-label']) }}
-                {{ Form::text('deskripsi_proyek', null, ['class' => 'form-control']) }}
+                {{ Form::label('deskripsi_proyek', 'Deskripsi Kegiatan', ['class' => 'control-label']) }}
+                {{ Form::textarea('deskripsi_proyek', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
