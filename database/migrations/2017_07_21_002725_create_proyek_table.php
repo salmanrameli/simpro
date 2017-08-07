@@ -18,7 +18,8 @@ class CreateProyekTable extends Migration
             $table->primary('kode_proyek');
 
             $table->string('nama_proyek');
-            $table->string('pemilik_proyek');
+            $table->string('id_pemilik_proyek');
+            $table->string('nama_pemilik_proyek');
             $table->text('deskripsi_proyek');
             $table->string('tanggal_mulai');
             $table->date('tanggal_target_selesai');
