@@ -6882,3 +6882,7 @@ button.close {
 {
   border-left:solid 3px #75D900;
 }
+.bg-red
+{
+  background-color: red;
+}
