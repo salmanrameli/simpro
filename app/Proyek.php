@@ -11,7 +11,7 @@ class Proyek extends Model
     protected $primaryKey = 'kode_proyek';
 
     protected $fillable = [
-        'kode_proyek', 'nama_proyek', 'pemilik_proyek', 'deskripsi_proyek', 'tanggal_mulai', 'tanggal_target_selesai', 'tanggal_realisasi'
+        'kode_proyek', 'nama_proyek', 'id_pemilik_proyek', 'nama_pemilik_proyek', 'deskripsi_proyek', 'tanggal_mulai', 'tanggal_target_selesai', 'tanggal_realisasi'
     ];
 
     public function user()
