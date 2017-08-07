@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('title')
-    Register Proyek
+    Kegiatan Baru
     @endsection
 
 @section('content')
     <div class="panel panel-default">
-        <div class="panel-heading">Register Proyek</div>
+        <div class="panel-heading">Kegiatan Baru</div>
 
         <div class="panel-body">
             {{ Form::open(['route' => 'proyek.store']) }}
@@ -52,7 +52,7 @@
             </div>
 
             <br>
-            {{ Form::submit('Buat Proyek', ['class' => 'btn btn-primary']) }}
+            {{ Form::submit('Daftarkan Kegiatan', ['class' => 'btn btn-primary']) }}
             {{ Form::close() }}
 
         </div>
