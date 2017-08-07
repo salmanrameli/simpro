@@ -47,6 +47,8 @@
                 <a href="{{ route('proyek.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Proyek</a>
                 @if($deskripsi->tanggal_realisasi != '0000-00-00')
                     <a href="{{ route('proyek.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai proyek belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Proyek Belum Selesai</a>
+                    @elseif($deskripsi->tanggal_realisasi == '0000-00-00')
+                    <a href="{{ route('proyek.tandai_selesai', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai proyek selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
                 @endif
             </div>
         </div>
