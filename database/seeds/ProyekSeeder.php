@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class ProyekSeeder extends Seeder
 {
@@ -11,45 +12,210 @@ class ProyekSeeder extends Seeder
      */
     public function run()
     {
-        $proyek = new \App\Proyek();
+        $faker = Faker::create();
 
-        $proyek->kode_proyek = 'P1';
-        $proyek->nama_proyek = 'Proyek #1';
-        $proyek->pemilik_proyek = '1';
-        $proyek->deskripsi_proyek = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non dapibus nunc, id bibendum dolor. Duis nunc erat, volutpat a dictum at, scelerisque a nisi. Curabitur laoreet ipsum nec urna accumsan, et condimentum magna dignissim. Integer nec nisl velit.';
-        $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
-        $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth(1)->toDateString();
-        $proyek->tanggal_realisasi = '0000-00-00';
-        $proyek->save();
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->randomNumber();
+            $bulan = $faker->numberBetween(1, 12);
+            $proyek->kode_proyek = $kode;
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '1';
+            $proyek->nama_pemilik_proyek = 'Alpha';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth($bulan)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
 
-        $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
 
-        $proyek_anggota->kode_proyek = 'P1';
-        $proyek_anggota->nama_proyek = 'Proyek #1';
-        $proyek_anggota->id_pegawai = '1';
-        $proyek_anggota->save();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '2';
+            $proyek_anggota->save();
 
-        $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
+        }
 
-        $proyek_anggota->kode_proyek = 'P1';
-        $proyek_anggota->nama_proyek = 'Proyek #1';
-        $proyek_anggota->id_pegawai = '2';
-        $proyek_anggota->save();
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->creditCardNumber();
+            $proyek->kode_proyek = $kode;
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '3';
+            $proyek->nama_pemilik_proyek = 'Charlie';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->addMonth(-5)->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth(-3)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
 
-        $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
 
-        $proyek_anggota->kode_proyek = 'P1';
-        $proyek_anggota->nama_proyek = 'Proyek #1';
-        $proyek_anggota->id_pegawai = '3';
-        $proyek_anggota->save();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
 
-        $proyek_progress = new \App\Proyek_Progress();
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '5';
+            $proyek_anggota->save();
+        }
 
-        $proyek_progress->kode_proyek = 'P1';
-        $proyek_progress->id_pegawai = '1';
-        $proyek_progress->kegiatan = 'inisialisasi proyek';
-        $proyek_progress->progress = '100';
-        $proyek_progress->keterangan = 'Ut vitae nunc porta, vulputate nibh a, sagittis lorem. Vestibulum ac iaculis risus. Donec nunc urna, fermentum eu metus vel, consectetur convallis lectus. Nullam vitae nisl sed sem lobortis faucibus nec eu dui.';
-        $proyek_progress->save();
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->randomNumber();
+            $proyek->kode_proyek = $kode;
+            $bulan = $faker->numberBetween(1, 12);
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '2';
+            $proyek->nama_pemilik_proyek = 'Bravo';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth($bulan)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '2';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '4';
+            $proyek_anggota->save();
+        }
+
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->creditCardNumber();
+            $proyek->kode_proyek = $kode;
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '5';
+            $proyek->nama_pemilik_proyek = 'Echo';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->addMonth(-5)->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth(-3)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '5';
+            $proyek_anggota->save();
+        }
+
+
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->randomNumber();
+            $proyek->kode_proyek = $kode;
+            $bulan = $faker->numberBetween(1, 12);
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '3';
+            $proyek->nama_pemilik_proyek = 'Charlie';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth($bulan)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '4';
+            $proyek_anggota->save();
+        }
+
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->randomNumber();
+            $proyek->kode_proyek = $kode;
+            $bulan = $faker->numberBetween(1, 12);
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '4';
+            $proyek->nama_pemilik_proyek = 'Delta';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth($bulan)->toDateString();
+            $proyek->tanggal_realisasi = '0000-00-00';
+            $proyek->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '4';
+            $proyek_anggota->save();
+        }
+
     }
 }
