@@ -30,11 +30,11 @@ class ProyekController extends Controller
          * Menampilkan semua proyek jika user termasuk salah satu anggotanya.
          * Diurutkan berdasarkan kolom created_at secara ascending.
          */
-        $paginate = 10;
+        $paginate = 100;
 
         $proyek = DB::table('proyek_anggota')
             ->join('proyek', 'proyek_anggota.kode_proyek', '=', 'proyek.kode_proyek')
-            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_target_selesai')
+            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.id_pemilik_proyek', 'proyek.nama_pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_target_selesai')
             ->where('proyek_anggota.id_pegawai', Auth::id())
             ->latest()
             ->simplePaginate($paginate);
@@ -94,7 +94,8 @@ class ProyekController extends Controller
 
             $proyek->kode_proyek = $request->kode_proyek;
             $proyek->nama_proyek = $request->nama_proyek;
-            $proyek->pemilik_proyek = $request->user()->id;
+            $proyek->id_pemilik_proyek = Auth::id();
+            $proyek->nama_pemilik_proyek = DB::table('users')->where('id', Auth::id())->value('name');
             $proyek->deskripsi_proyek = $request->deskripsi_proyek;
             $proyek->tanggal_mulai = $request->tanggal_mulai;
             $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
@@ -173,11 +174,11 @@ class ProyekController extends Controller
 
         $uid = Auth::id();
 
-        $pemilik_proyek = DB::table('proyek')->where('kode_proyek', $id)->value('pemilik_proyek');
+        $pemilik_proyek = DB::table('proyek')->where('kode_proyek', $id)->value('id_pemilik_proyek');
 
         $tugas_baru = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '0']])->latest('updated_at')->get();
 
-        $deskripsi_proyek = DB::table('proyek')->join('users', 'proyek.pemilik_proyek', '=', 'users.id')->where('proyek.kode_proyek', $id)->first();
+        $deskripsi_proyek = DB::table('proyek')->join('users', 'proyek.id_pemilik_proyek', '=', 'users.id')->where('proyek.kode_proyek', $id)->first();
 
         $anggota_proyek = DB::table('proyek_anggota')->join('users', 'proyek_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('proyek_anggota.kode_proyek', $id)->simplePaginate($paginate);
 
