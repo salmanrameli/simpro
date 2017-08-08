@@ -34,7 +34,7 @@ class ProyekController extends Controller
 
         $proyek = DB::table('proyek_anggota')
             ->join('proyek', 'proyek_anggota.kode_proyek', '=', 'proyek.kode_proyek')
-            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.id_pemilik_proyek', 'proyek.nama_pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_target_selesai')
+            ->select('proyek_anggota.*',  'proyek.nama_proyek', 'proyek.id_pemilik_proyek', 'proyek.nama_pemilik_proyek', 'proyek.tanggal_mulai', 'proyek.tanggal_target_selesai', 'proyek.tanggal_realisasi')
             ->where('proyek_anggota.id_pegawai', Auth::id())
             ->latest()
             ->simplePaginate($paginate);
@@ -390,13 +390,13 @@ class ProyekController extends Controller
 
         DB::table('proyek')->where('kode_proyek', $id)->update(['tanggal_realisasi' => $sekarang]);
 
-        return redirect()->back()->with('message', 'Proyek berhasil ditandai selesai');
+        return redirect()->back()->with('message', 'Kegiatan berhasil ditandai selesai');
     }
 
     public function belum_selesai($id)
     {
         DB::table('proyek')->where('kode_proyek', $id)->update(['tanggal_realisasi' => '0000-00-00']);
 
-        return redirect()->route('proyek.index')->with('message', 'Proyek berhasil ditandai belum selesai');
+        return redirect()->route('proyek.index')->with('message', 'Kegiatan berhasil ditandai belum selesai');
     }
 }
