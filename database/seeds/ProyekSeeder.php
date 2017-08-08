@@ -52,6 +52,40 @@ class ProyekSeeder extends Seeder
         {
             $proyek = new \App\Proyek();
             $kode = $faker->creditCardNumber();
+            $bulan = $faker->numberBetween(1, 12);
+            $proyek->kode_proyek = $kode;
+            $proyek->nama_proyek = $faker->catchPhrase();
+            $proyek->id_pemilik_proyek = '1';
+            $proyek->nama_pemilik_proyek = 'Alpha';
+            $proyek->deskripsi_proyek = $faker->paragraph(5);
+            $proyek->tanggal_mulai = \Carbon\Carbon::now()->addMonth(-5)->toDateString();
+            $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth($bulan)->toDateString();
+            $proyek->tanggal_realisasi = \Carbon\Carbon::now()->toDateString();
+            $proyek->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '1';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '2';
+            $proyek_anggota->save();
+
+            $proyek_anggota = new \App\Proyek_Anggota();
+            $proyek_anggota->kode_proyek = $kode;
+            $proyek_anggota->nama_proyek = $proyek->nama_proyek;
+            $proyek_anggota->id_pegawai = '3';
+            $proyek_anggota->save();
+        }
+
+        foreach (range(1, 10) as $index)
+        {
+            $proyek = new \App\Proyek();
+            $kode = $faker->creditCardNumber();
             $proyek->kode_proyek = $kode;
             $proyek->nama_proyek = $faker->catchPhrase();
             $proyek->id_pemilik_proyek = '3';
