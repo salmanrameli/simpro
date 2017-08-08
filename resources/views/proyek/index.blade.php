@@ -5,19 +5,20 @@
     @endsection
 
 @section('content')
-    <a href="{{ route('proyek.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Buat Kegiatan Baru</a><br><br>
+    <a href="{{ route('proyek.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Buat Kegiatan Baru</a><br>
 
     <div id="id_user" class="hidden">{{ \Illuminate\Support\Facades\Auth::id() }}</div>
 
     <div class="row">
-        <h1>Kegiatan</h1>
+        <h1>Kegiatan</h1><hr>
+        Pilih filter:
         <select id="sortlist">
-            <option value="none">Pilih filter</option>
-            <option value="tgl_asc">Tanggal - Ascending</option>
-            <option value="tgl_desc">Tanggal - Descending</option>
+            <option value="none">None</option>
+            <option value="now">Hari Ini</option>
+            <option value="tgl_asc">Terlama</option>
+            <option value="tgl_desc">Terbaru</option>
             <option value="milik_saya">Kegiatan Milik Saya</option>
         </select>
-        <a href="{{ route('home') }}">Reset filter</a>
         <form>
             <br>
             <div class="input-group">
@@ -26,7 +27,7 @@
             </div>
         </form>
     </div>
-    <hr>
+    <br>
 
     <table class="table" id="tabel">
         <thead>
@@ -53,9 +54,10 @@
                 <td>{{ $proyek->tanggal_mulai }}</td>
                 <td id="target_selesai">{{ $proyek->tanggal_target_selesai }}</td>
                 <td></td>
-                <td><a href="{{ route('proyek.show', ['id' => $proyek->kode_proyek]) }}" class="btn btn-info"><span class="glyphicon glyphicon-search"></span> Lihat Detail</a></td>
+                <td><a href="{{ route('proyek.show', ['id' => $proyek->kode_proyek]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
                 <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
                 <td class="hidden">{{ $proyek->id_pemilik_proyek }}</td>
+                <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -66,6 +68,62 @@
 @endsection
 
 @section('js')
+    <script>
+        /*
+        Javascript untuk melakukan filter tabel berdasarkan menu dropdown yang dipilih oleh user
+         */
+        $(document).ready(function($) {
+            var dataset = $('#tabel').find('tbody').find('tr');
+
+            $('#sortlist').change(function() {
+                var selection = $(this).val();
+
+                switch (selection)
+                {
+                    case 'none':
+                        dataset.show();
+                        break;
+
+                    case 'milik_saya':
+                        var filter = $('#id_user').text();
+
+                        dataset.show();
+
+                        dataset.filter(function(index, item) {
+                            return $(item).find('td:nth-child(9)').text().toUpperCase().indexOf(filter) === -1;
+                        }).hide();
+                        break;
+
+                    case 'now':
+                        var date = new Date();
+                        var d = date.getDate();
+                        if(d < 10)
+                        {
+                            d = '0' + d;
+                        }
+                        var m = date.getMonth() + 1;
+                        if(m < 10)
+                        {
+                            m = '0' + m;
+                        }
+                        var y = date.getFullYear();
+                        var current = y + '-' + m + '-' + d;
+
+                        dataset.show();
+
+                        dataset.filter(function(index, item) {
+                            return $(item).find('td:nth-child(8)').text().toUpperCase().indexOf(current) === -1;
+                        }).hide();
+                        break;
+
+                    default:
+                        dataset.show();
+                        break;
+                }
+
+            });
+        });
+    </script>
     <script>
         /*
         Javascript untuk mengatur status proyek – on-track atau terlambat – dan memberikan warna background yang sesuai
@@ -82,6 +140,7 @@
         table.find('tr').each(function (i) {
             var $tds = $(this).find('td');
             var tanggal_mulai = $tds.eq(3).text();
+            var tanggal_target = $tds.eq(9).text();
             var d = new Date(tanggal_mulai);
             var curr_date = d.getDate();
             var curr_month = d.getMonth(); //Months are zero based
@@ -101,16 +160,19 @@
 
             var x = 9;
 
-            if(curdate > tanggal_selesai)
+            if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
             {
-                $(this).find('td').eq(x).html('<td style="padding: 6px; background-color: red; color:white;"> Terlambat</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; color:white; background-color: red" width="76px"> Terlambat</td>');
+            }
+            else if(tanggal_target !== '0000-00-00')
+            {
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #45d9ec; color:white;" width="76"> Selesai</td>');
             }
             else {
-                $(this).find('td').eq(x).html('<td style="padding: 6px; background-color: #4cd12c; color:white;"> On-Track</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="76"> On-Track</td>');
             }
 
         });
-
     </script>
 
     <script>
@@ -129,6 +191,7 @@
                 var ColTglSelesai = rows[i].cells[4].textContent.toUpperCase();
                 var ColTglTarget = rows[i].cells[5].textContent.toUpperCase();
                 var ColStatus = rows[i].cells[6].textContent.toUpperCase();
+
                 if (ColId.indexOf(filter) > -1 || ColKegiatan.indexOf(filter) > -1 || ColKetua.indexOf(filter) > -1 || ColTglMulai.indexOf(filter) > -1 || ColTglSelesai.indexOf(filter) > -1 || ColTglTarget.indexOf(filter) > -1 || ColStatus.indexOf(filter) > -1) {
                     rows[i].style.display = "";
                 } else {
@@ -146,13 +209,10 @@
          */
         function bgChange(selectedCategory) {
             var $tbody = $('#tabel').find('tbody');
+            var rows = document.querySelector("#tabel tbody").rows;
 
             switch (selectedCategory)
             {
-                case 'none':
-                    location.reload();
-                    break;
-
                 case 'tgl_asc':
                     $tbody.find('tr').sort(function(a,b){
                         var tda = $(a).find('td:eq(12)').text(); // can replace 1 with the column you want to sort on
@@ -172,20 +232,6 @@
                                 : 0;
                     }).appendTo($tbody);
                     break;
-
-                case 'milik_saya':
-                    var filter = $('#id_user').text();
-                    var rows = document.querySelector("#tabel tbody").rows;
-
-                    for (var i = 0; i < rows.length; i++) {
-                        var ColKetua = rows[i].cells[8].textContent.toUpperCase();
-
-                        if (ColKetua.indexOf(filter.toUpperCase()) > -1 ) {
-                            rows[i].style.display = "";
-                        } else {
-                            rows[i].style.display = "none";
-                        }
-                    }
             }
         }
 
