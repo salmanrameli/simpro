@@ -58,10 +58,53 @@ class KegiatanController extends Controller
      */
     public function store(Request $request)
     {
-        $names = $request->get('anggota');
+        $names = count($request->get('nama'));
+
+        $now = Carbon::now();
+
+        $terakhir = DB::table('kegiatan')->latest('tanggal_mulai')->value('tanggal_mulai');
+        $counter = DB::table('kegiatan')->latest('tanggal_mulai')->value('kode_kegiatan');
+        $terakhir = explode('-', $terakhir);
+        $counter = explode('-', $counter);
+        $antrian = intval($counter[3]);
+
+        $parse = Carbon::parse($now);
+
+        $tanggal = $parse->day;
+        if($tanggal < 10)
+        {
+            $tanggal = '0' . $tanggal;
+        }
+
+        $bulan = $parse->month;
+        if($bulan < 10)
+        {
+            $bulan = '0' . $bulan;
+        }
+
+        $tahun = $parse->year;
+        $tahun = substr($tahun, -2);
+
+        $nama = $request->nama_proyek;
+        $nama = substr($nama, 0, 5);
+
+        if($tanggal != $terakhir[2])
+        {
+            $antrian = 1;
+        }
+        else
+        {
+            $antrian += 1;
+        }
+
+        $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $antrian . '-' . $nama;
+
+//        Session::flash('message', $kode_kegiatan);
+//
+//        return redirect()->back();
+
 
         $this->validate($request, [
-            'kode_proyek' => 'required',
             'nama_proyek' => 'required',
             'deskripsi_proyek' => 'required',
             'tanggal_target_selesai' => 'required|date'
@@ -84,11 +127,10 @@ class KegiatanController extends Controller
          */
             $proyek = new Kegiatan();
 
-            $proyek->kode_proyek = $request->kode_proyek;
-            $proyek->nama_proyek = $request->nama_proyek;
-            $proyek->id_pemilik_proyek = Auth::id();
-            $proyek->nama_pemilik_proyek = DB::table('users')->where('id', Auth::id())->value('name');
-            $proyek->deskripsi_proyek = $request->deskripsi_proyek;
+            $proyek->kode_kegiatan = $kode_kegiatan;
+            $proyek->nama_kegiatan = $request->nama_proyek;
+            $proyek->id_pemilik_kegiatan= Auth::id();
+            $proyek->deskripsi_kegiatan = $request->deskripsi_proyek;
             $proyek->tanggal_mulai = $request->tanggal_mulai;
             $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
             $proyek->tanggal_realisasi = '0';
@@ -100,7 +142,7 @@ class KegiatanController extends Controller
             $log = new Log();
 
             $log->id_pegawai = $request->user()->id;
-            $log->data = "membuat kegiatan " . $request->kode_proyek;
+            $log->data = "membuat kegiatan " . $kode_kegiatan;
             $log->save();
 
             /*
@@ -108,8 +150,8 @@ class KegiatanController extends Controller
              */
             $anggota_proyek = new Kegiatan_Anggota();
 
-            $anggota_proyek->kode_proyek = $request->kode_proyek;
-            $anggota_proyek->nama_proyek = $request->nama_proyek;
+            $anggota_proyek->kode_kegiatan = $kode_kegiatan;
+            $anggota_proyek->nama_kegiatan = $request->nama_proyek;
             $anggota_proyek->id_pegawai = $request->user()->id;
             $anggota_proyek->save();
 
@@ -117,13 +159,13 @@ class KegiatanController extends Controller
              * Mendaftarkan kode, nama, dan anggota proyek ke tabel proyek_anggota.
              * Looping dilakukan untuk memasukkan data setiap anggota proyek yang dipilih ke tabel proyek_anggota.
              */
-            foreach ($names as $name)
+            for($i=0; $i<$names; $i++)
             {
                 $anggota_proyek = new Kegiatan_Anggota();
 
-                $anggota_proyek->kode_kegiatan = $request->kode_proyek;
+                $anggota_proyek->kode_kegiatan = $kode_kegiatan;
                 $anggota_proyek->nama_kegiatan = $request->nama_proyek;
-                $anggota_proyek->id_pegawai = $name;
+                $anggota_proyek->id_pegawai = $request->nama[$i];
                 $anggota_proyek->save();
 
                 /*
@@ -132,13 +174,13 @@ class KegiatanController extends Controller
                 $log = new Log();
 
                 $log->id_pegawai = Auth::id();
-                $log->data = "menambah pegawai " . $name . " ke proyek " . $request->kode_proyek;
+                $log->data = "menambah pegawai " . $request->nama[$i] . " ke kegiatan " . $kode_kegiatan;
                 $log->save();
             }
 
             Session::flash('message', 'Kegiatan berhasil didaftarkan');
 
-            return redirect()->route('kegiatan.index');
+        return redirect()->route('kegiatan.show', $kode_kegiatan);
         }
         else
         {
@@ -166,23 +208,23 @@ class KegiatanController extends Controller
 
         $uid = Auth::id();
 
-        $pemilik_proyek = DB::table('kegiatan')->where('kode_proyek', $id)->value('id_pemilik_proyek');
+        $pemilik_proyek = DB::table('kegiatan')->where('kode_kegiatan', $id)->value('id_pemilik_kegiatan');
 
-        $tugas_baru = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '0']])->latest('updated_at')->get();
+        $tugas_baru = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '0']])->latest('updated_at')->get();
 
-        $deskripsi_proyek = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_proyek', '=', 'users.id')->where('kegiatan.kode_proyek', $id)->first();
+        $deskripsi_proyek = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->where('kegiatan.kode_kegiatan', $id)->first();
 
-        $anggota_proyek = DB::table('kegiatan_anggota')->join('users', 'proyek_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('kegiatan_anggota.kode_proyek', $id)->simplePaginate($paginate);
+        $anggota_proyek = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('kegiatan_anggota.kode_kegiatan', $id)->simplePaginate($paginate);
 
         $dokumen = DB::table('dokumen')->join('users', 'dokumen.id_pegawai', '=', 'users.id')->select('dokumen.*', 'users.name')->where('kode_proyek', $id)->simplePaginate($paginate);
 
         if($pemilik_proyek == $uid)
         {
-            $tugas_ongoing = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '1']])->latest('updated_at')->get();
+            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1']])->latest('updated_at')->get();
 
-            $tugas_request = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '2']])->latest('updated_at')->get();
+            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2']])->latest('updated_at')->get();
 
-            $tugas_selesai = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '3']])->latest('updated_at')->get();
+            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3']])->latest('updated_at')->get();
 
             return view('kegiatan.show-owner')
                 ->with('deskripsi', $deskripsi_proyek)
@@ -196,11 +238,11 @@ class KegiatanController extends Controller
         }
         else
         {
-            $tugas_ongoing = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '1'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
-            $tugas_request = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '2'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
-            $tugas_selesai = DB::table('proyek_tugas')->where([['kode_proyek', $id], ['status', '3'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
 
             return view('kegiatan.show')
                 ->with('deskripsi', $deskripsi_proyek)
