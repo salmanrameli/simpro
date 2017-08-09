@@ -14,9 +14,8 @@ class CreateKegiatanTable extends Migration
     public function up()
     {
         Schema::create('kegiatan', function (Blueprint $table) {
-            $table->string('kode_kegiatan');
-            $table->primary('kode_kegiatan');
-
+            $table->increments('id');
+            $table->string('kode_kegiatan')->unique();
             $table->string('nama_kegiatan');
             $table->string('id_pemilik_kegiatan');
             $table->text('deskripsi_kegiatan');
