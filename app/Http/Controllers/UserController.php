@@ -25,7 +25,7 @@ class UserController extends Controller
 
         $message = \session('message');
 
-        return redirect('/proyek');
+        return redirect('/kegiatan');
 
 //        if($role == '1')
 //        {
