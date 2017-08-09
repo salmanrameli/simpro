@@ -9,7 +9,7 @@
         <div class="panel-heading">Proyek - Tambah Anggota</div>
 
         <div class="panel-body">
-            {{ Form::open(['route' => ['proyek.tambah_anggota_proyek', $kode]]) }}
+            {{ Form::open(['route' => ['kegiatan', $kode]]) }}
 
             {{--<div class="form-group">--}}
                 {{--{{ Form::text('id', $kode, ['class' => 'form-control']) }}--}}

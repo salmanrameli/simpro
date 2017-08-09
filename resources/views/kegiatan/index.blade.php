@@ -5,7 +5,7 @@
     @endsection
 
 @section('content')
-    <a href="{{ route('proyek.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Buat Kegiatan Baru</a><br>
+    <a href="{{ route('kegiatan.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Buat Kegiatan Baru</a><br>
 
     <div id="id_user" class="hidden">{{ \Illuminate\Support\Facades\Auth::id() }}</div>
 
@@ -15,8 +15,8 @@
         <select id="sortlist">
             <option value="none">None</option>
             <option value="now">Hari Ini</option>
-            <option value="tgl_asc">Terlama</option>
-            <option value="tgl_desc">Terbaru</option>
+            <option value="tgl_asc">Lama ke Baru</option>
+            <option value="tgl_desc">Baru ke Lama</option>
             <option value="milik_saya">Kegiatan Milik Saya</option>
         </select>
         <form>
@@ -48,22 +48,20 @@
         <tbody>
         @foreach($proyeks as $proyek)
             <tr class="Entries">
-                <td>{{ $proyek->kode_proyek }}</td>
-                <td>{{ $proyek->nama_proyek }}</td>
-                <td>{{ $proyek->nama_pemilik_proyek }}</td>
+                <td>{{ $proyek->kode_kegiatan }}</td>
+                <td>{{ $proyek->nama_kegiatan }}</td>
+                <td>{{ $proyek->name }}</td>
                 <td>{{ $proyek->tanggal_mulai }}</td>
                 <td id="target_selesai">{{ $proyek->tanggal_target_selesai }}</td>
                 <td></td>
-                <td><a href="{{ route('proyek.show', ['id' => $proyek->kode_proyek]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
+                <td><a href="{{ route('kegiatan.show', ['id' => $proyek->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
                 <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
-                <td class="hidden">{{ $proyek->id_pemilik_proyek }}</td>
+                <td class="hidden">{{ $proyek->id_pemilik_kegiatan }}</td>
                 <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
-
-    {{ $proyeks->links() }}
 
 @endsection
 
@@ -162,14 +160,14 @@
 
             if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
             {
-                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; color:white; background-color: red" width="76px"> Terlambat</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
             }
             else if(tanggal_target !== '0000-00-00')
             {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #45d9ec; color:white;" width="76"> Selesai</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
             }
             else {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="76"> On-Track</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
             }
 
         });
@@ -209,7 +207,6 @@
          */
         function bgChange(selectedCategory) {
             var $tbody = $('#tabel').find('tbody');
-            var rows = document.querySelector("#tabel tbody").rows;
 
             switch (selectedCategory)
             {

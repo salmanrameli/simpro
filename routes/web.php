@@ -28,36 +28,36 @@ Route::get('/user/{id}/ubah_password', [
 
 Route::post('/user/ubah_password', function(\Illuminate\Http\Request $request){})->name('user.simpan_password')->uses('UserController@simpan_password');
 
-Route::resource('proyek', 'ProyekController');
-
 //Route::get('/proyek_progress/{id}-kode={kode?}/edit', [
 //    'as' => 'proyek_progress.edit',
 //    'uses' => 'ProyekProgressController@edit'
 //]);
 
-Route::get('proyek/{id}/hapus_anggota', [
-    'as' => 'proyek.anggota',
-    'uses' => 'ProyekController@anggota_proyek'
+Route::resource('kegiatan', 'KegiatanController');
+
+Route::get('kegiatan/{id}/hapus_anggota', [
+    'as' => 'kegiatan.anggota',
+    'uses' => 'KegiatanController@anggota_proyek'
 ]);
 
-Route::get('proyek/{id}/tambah_anggota', [
-    'as' => 'proyek.tambah_anggota',
-    'uses' => 'ProyekController@tambah_anggota'
+Route::get('kegiatan/{id}/tambah_anggota', [
+    'as' => 'kegiatan.tambah_anggota',
+    'uses' => 'KegiatanController@tambah_anggota'
 ]);
 
-Route::get('proyek/tandai_selesai/{id}', [
-    'as' => 'proyek.tandai_selesai',
-    'uses' => 'ProyekController@tandai_selesai'
+Route::get('kegiatan/tandai_selesai/{id}', [
+    'as' => 'kegiatan.tandai_selesai',
+    'uses' => 'KegiatanController@tandai_selesai'
 ]);
 
-Route::get('proyek/belum_selesai/{id}', [
-    'as' => 'proyek.belum_selesai',
-    'uses' => 'ProyekController@belum_selesai'
+Route::get('kegiatan/belum_selesai/{id}', [
+    'as' => 'kegiatan.belum_selesai',
+    'uses' => 'KegiatanController@belum_selesai'
 ]);
 
-Route::post('proyek/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('proyek.tambah_anggota_proyek')->uses('ProyekController@tambah_anggota_proyek');
+Route::post('kegiatan/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('kegiatan.tambah_anggota_proyek')->uses('KegiatanController@tambah_anggota_proyek');
 
-Route::get('proyek/{id}/hapus_anggota/{kode}')->name('proyek.hapus_anggota')->uses('ProyekController@hapus_anggota_proyek');
+Route::get('kegiatan/{id}/hapus_anggota/{kode}')->name('kegiatan.hapus_anggota')->uses('KegiatanController@hapus_anggota_proyek');
 
 Route::resource('proyek_progress', 'ProyekProgressController');
 

@@ -70,7 +70,7 @@ class LoginController extends Controller
 //     *
 //     * @var string
 //     */
-    protected $redirectTo = '/proyek';
+    protected $redirectTo = '/kegiatan';
 
     /**
      * Create a new controller instance.
