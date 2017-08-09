@@ -8,10 +8,10 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-body">
-                <h3>{{ $deskripsi->nama_proyek }}</h3>
+                <h3>{{ $deskripsi->nama_kegiatan }}</h3>
                 <hr>
                 <h5>Deskripsi Proyek:</h5>
-                <p>{{ $deskripsi->deskripsi_proyek }}</p>
+                <p>{{ $deskripsi->deskripsi_kegiatan }}</p>
             </div>
         </div>
     </div>
@@ -44,11 +44,11 @@
                         @endif
                     </tbody>
                 </table>
-                <a href="{{ route('proyek.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Proyek</a>
+                <a href="{{ route('kegiatan.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Proyek</a>
                 @if($deskripsi->tanggal_realisasi != '0000-00-00')
-                    <a href="{{ route('proyek.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai proyek belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Proyek Belum Selesai</a>
+                    <a href="{{ route('kegiatan.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai proyek belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Proyek Belum Selesai</a>
                     @elseif($deskripsi->tanggal_realisasi == '0000-00-00')
-                    <a href="{{ route('kegiatan', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai proyek selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
+                    <a href="{{ route('kegiatan.tandai_selesai', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai proyek selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
                 @endif
             </div>
         </div>
@@ -226,7 +226,7 @@
 
                     <div id="anggota" class="tab-pane fade">
                         <br>
-                        <a href="{{ route('proyek.tambah_anggota', ['id' => $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota Proyek</a>
+                        <a href="{{ route('kegiatan.tambah_anggota', ['id' => $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota Proyek</a>
                         <h3>Anggota Proyek</h3>
                         <br>
                         <table class="table table-striped">
@@ -248,9 +248,9 @@
                                     <td>{{ $anggota->telepon }}</td>
                                     <td>
                                         @if($anggota->id == \Illuminate\Support\Facades\Auth::id())
-                                            <a href="{{ route('proyek.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right disabled" onclick="return confirm('Hapus anggota dari proyek?')" data-toggle="tooltip" title="Anda pemilik proyek ini"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="{{ route('kegiatan.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right disabled" onclick="return confirm('Hapus anggota dari kegiatan?')" data-toggle="tooltip" title="Anda pemilik kegiatan ini"><span class="glyphicon glyphicon-trash"></span></a>
                                             @else
-                                            <a href="{{ route('proyek.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus anggota dari proyek?')"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a href="{{ route('kegiatan.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus anggota dari kegiatan?')"><span class="glyphicon glyphicon-trash"></span></a>
                                             @endif
                                     </td>
                                 </tr>
