@@ -29,7 +29,7 @@ class KegiatanController extends Controller
          * Menampilkan semua proyek jika user termasuk salah satu anggotanya.
          * Diurutkan berdasarkan kolom created_at secara ascending.
          */
-        $kegiatan = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')->orderBy('kegiatan.tanggal_mulai', 'desc')->get();
+        $kegiatan = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')->orderBy('kegiatan.created_at', 'asc')->get();
 
         return view('kegiatan.index')
             ->with('proyeks', $kegiatan);
