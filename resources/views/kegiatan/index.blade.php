@@ -5,7 +5,7 @@
     @endsection
 
 @section('content')
-    <a href="{{ route('kegiatan.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-file"></span> Buat Kegiatan Baru</a><br>
+    <a href="{{ route('kegiatan.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Aktivitas Baru</a><br>
 
     <div id="id_user" class="hidden">{{ \Illuminate\Support\Facades\Auth::id() }}</div>
 

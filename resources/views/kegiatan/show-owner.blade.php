@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Proyek - Progress
+    {{ $deskripsi->nama_kegiatan }}
 @endsection
 
 @section('content')
@@ -59,7 +59,7 @@
             <div class="panel-body">
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#progress"><span class="glyphicon glyphicon-stats"></span> Progress</a></li>
-                    <li><a data-toggle="tab" href="#anggota"><span class="glyphicon glyphicon-user"></span> Anggota Proyek</a></li>
+                    <li><a data-toggle="tab" href="#anggota"><span class="glyphicon glyphicon-user"></span> PIC</a></li>
                     <li><a data-toggle="tab" href="#upload"><span class="glyphicon glyphicon-upload"></span> Upload</a></li>
                     <li><a data-toggle="tab" href="#download"><span class="glyphicon glyphicon-paperclip"></span> Dokumen</a></li>
                 </ul>
@@ -117,7 +117,7 @@
                             </div>
                         </div>
 
-                        <h3>Update Terbaru</h3>
+                        <h3>Status Aktivitas</h3>
                         <br>
                         <div class="col-lg-3">
                             <div class="panel-heading" style="background-color: #00C4FB; color: white">
@@ -227,7 +227,7 @@
                     <div id="anggota" class="tab-pane fade">
                         <br>
                         <a href="{{ route('kegiatan.tambah_anggota', ['id' => $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota Proyek</a>
-                        <h3>Anggota Proyek</h3>
+                        <h3>PIC</h3>
                         <br>
                         <table class="table table-striped">
                             <thead>
