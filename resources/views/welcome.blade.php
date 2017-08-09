@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
 
-        <title>Laravel</title>
+        <title>Portal Divisi Satelit Jaringan Komunikasi</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -47,7 +47,8 @@
             }
 
             .title {
-                font-size: 84px;
+                font-size: 40px;
+                text-align: center;
             }
 
             .links > a {
@@ -71,15 +72,16 @@
                 <div class="top-right links">
                     @if (Auth::check())
                         <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        {{--<a href="{{ url('/login') }}">Login</a>--}}
-                        {{--<a href="{{ url('/register') }}">Register</a>--}}
                     @endif
                 </div>
             @endif
 
             <div class="content">
-                <img src="{{ asset('bootstrap/img/bri-sat.jpg') }}" style="display: inline-block; padding-left: 23px" class="pull-left" href="{{ route('home') }}">
+                <img src="{{ asset('bootstrap/img/bri-sat.jpg') }}" style="display: inline-block; " href="{{ route('home') }}">
+                <div class="title">
+                    Portal Divisi Satelit Jaringan Komunikasi
+                    <br><br>
+                </div>
 
                 <div class="links">
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
