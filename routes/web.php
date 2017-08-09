@@ -28,11 +28,6 @@ Route::get('/user/{id}/ubah_password', [
 
 Route::post('/user/ubah_password', function(\Illuminate\Http\Request $request){})->name('user.simpan_password')->uses('UserController@simpan_password');
 
-//Route::get('/proyek_progress/{id}-kode={kode?}/edit', [
-//    'as' => 'proyek_progress.edit',
-//    'uses' => 'ProyekProgressController@edit'
-//]);
-
 Route::resource('kegiatan', 'KegiatanController');
 
 Route::get('kegiatan/{id}/hapus_anggota', [
