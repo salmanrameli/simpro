@@ -33,7 +33,7 @@ class User extends Authenticatable
 
     public function proyek()
     {
-        return $this->hasMany('App\Proyek');
+        return $this->hasMany('App\Kegiatan');
     }
 
 //    public function jabatan()

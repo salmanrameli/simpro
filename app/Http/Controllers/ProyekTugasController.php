@@ -69,7 +69,7 @@ class ProyekTugasController extends Controller
             }
         }
 
-        return redirect()->route('proyek.show', $request->kode_proyek);
+        return redirect()->route('kegiatan.show', $request->kode_proyek);
     }
 
     /**
