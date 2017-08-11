@@ -18,7 +18,6 @@ class CreateKegiatanSubtaskTable extends Migration
             $table->string('kode_kegiatan');
             $table->string('id_pembuat');
             $table->string('nama_subtask');
-            $table->string('id_pegawai_mengerjakan')->nullable();
             $table->tinyInteger('status');
             $table->timestamps();
         });
