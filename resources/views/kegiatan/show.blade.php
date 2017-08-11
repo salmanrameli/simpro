@@ -210,6 +210,15 @@
                             {{ Form::text('nama_dokumen', null, ['class' => 'form-control']) }}
                         </div>
 
+                        <label for="lastname">Nama Subtask</label>
+                        <select class="form-control" name="nama" id="nama" data-parsley-required="true">
+                            @foreach ($subtasks as $subtask)
+                                {
+                                <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
+                                }
+                            @endforeach
+                        </select>
+
                         <br>
 
                         <div class="form-group">
