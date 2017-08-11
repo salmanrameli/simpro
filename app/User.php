@@ -31,9 +31,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function proyek()
+    public function kegiatan()
     {
-        return $this->hasMany('App\Kegiatan');
+        return $this->hasMany('App\Kegiatan', 'id_pemilik_kegiatan', 'id');
     }
 
 //    public function jabatan()
