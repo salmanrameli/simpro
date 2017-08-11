@@ -67,46 +67,51 @@
                 <div class="tab-content">
                     <div id="progress" class="tab-pane fade in active">
                         <br>
-                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Buat Tugas</button>
+                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Buat Subtask</button>
                         <div id="progress_baru" class="modal fade" role="dialog">
                             <div class="modal-dialog">
                                 <!-- Modal content-->
                                 <div class="modal-content">
-                                    {{ Form::open(['route' => 'proyek_tugas.store']) }}
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Progress Proyek</h4>
+                                        <button class="btn btn-default pull-right" id="tombol">Tambah Anggota Kegiatan</button><br>
                                     </div>
-                                    <div class="modal-body">
+                                    {{ Form::open(['route' => 'subtask.store', 'files' => 'true']) }}
+                                    <div class="modal-body row">
+                                        <div class="col-md-6">
+                                            <div class="form-group hidden">
+                                                {{ Form::text('kode_proyek', $kode, ['class' => 'form-control']) }}
+                                            </div>
 
-                                        <div class="form-group hidden">
-                                            {{ Form::text('kode_proyek', $kode, ['class' => 'form-control']) }}
-                                        </div>
+                                            <div class="form-group hidden">
+                                                {{ Form::text('id_pembuat', \Illuminate\Support\Facades\Auth::id(), ['class' => 'form-control']) }}
+                                            </div>
 
-                                        <div class="form-group hidden">
-                                            {{ Form::text('id_pembuat', \Illuminate\Support\Facades\Auth::id(), ['class' => 'form-control']) }}
-                                        </div>
+                                            <div class="form-group">
+                                                {{ Form::label('nama_tugas', 'Nama Tugas', ['class' => 'control-label']) }}
+                                                {{ Form::text('nama_tugas', null, ['class' => 'form-control']) }}
+                                            </div>
 
-                                        <div class="form-group">
-                                            {{ Form::label('nama_tugas', 'Nama Tugas', ['class' => 'control-label']) }}
-                                            {{ Form::text('nama_tugas', null, ['class' => 'form-control']) }}
-                                        </div>
+                                            <div class="form-group">
+                                                {{ Form::label(null, 'Pilih Dokumen', ['class' => 'control-label']) }}
+                                                {{ Form::file('dokumen') }}
+                                            </div>
 
-                                        <div class="scrollable-extended form-group">
-                                            <div class="control-label"><b>Ditugaskan kepada (opsional):</b></div>
-                                            <table class="table table-striped">
-                                                <tbody>
-                                                @foreach($anggotas as $anggota)
-                                                    <tr>
-                                                        <td>{{ Form::checkbox('anggota[]', $anggota->id) }}</td>
-                                                        <td>{{ $anggota->id }}</td>
-                                                        <td>{{ $anggota->name }}</td>
-                                                    </tr>
+                                            <select class="form-control" name="nama" id="nama" data-parsley-required="true">
+                                                @foreach ($subtasks as $subtask)
+                                                    {
+                                                    <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
+                                                    }
                                                 @endforeach
-                                                </tbody>
-                                            </table>
+                                            </select>
                                         </div>
-
+                                        <div class="col-md-6">
+                                            <div class="form-group" id="list_anggota">
+                                                {{ Form::label(null, 'Anggota:', ['class' => 'control-label']) }}
+                                                <br>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         {{ Form::submit('Buat Tugas', ['class' => 'btn btn-primary']) }}
@@ -128,17 +133,17 @@
                             <div class="panel panel-default">
 
                                     <div class="panel-body left-border-blue">
-                                        {{ $baru->nama_tugas }}
+                                        {{ $baru->nama_subtask }}
                                         <br>
                                         <br>
                                         <ul class="list-unstyled">
-                                            <li class="pull-right"><a href="{{ route('proyek_tugas.kerjakan', $baru->id) }}" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right"></span></a></li>
+                                            <li class="pull-right"><a href="{{ route('subtask.kerjakan', $baru->id) }}" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right"></span></a></li>
                                         </ul>
                                     </div>
                                     <div class="panel-footer left-border-blue clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('proyek_tugas.destroy', $baru->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
+                                                <li><a href="{{ route('subtask.destroy', $baru->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>
@@ -157,14 +162,14 @@
                                         <br>
                                         <br>
                                         <ul class="list-unstyled">
-                                            <li class="pull-right"><a href="{{ route('proyek_tugas.pindah_kanan', $ongoing->id) }}" data-toggle="tooltip" title="Pindah ke Request Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
-                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $ongoing->id) }}" data-toggle="tooltip" title="Kembalikan ke To Do"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
+                                            <li class="pull-right"><a href="{{ route('subtask.pindah_kanan', $ongoing->id) }}" data-toggle="tooltip" title="Pindah ke Request Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
+                                            <li class="pull-left"><a href="{{ route('subtask.pindah_kiri', $ongoing->id) }}" data-toggle="tooltip" title="Kembalikan ke To Do"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
                                         </ul>
                                     </div>
                                     <div class="panel-footer left-border-purple clearfix">
                                         <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
                                             <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('proyek_tugas.destroy', $ongoing->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
+                                                <li><a href="{{ route('subtask.destroy', $ongoing->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
                                             </ul>
                                         </li>
                                     </div>
@@ -275,6 +280,15 @@
                             {{ Form::text('nama_dokumen', null, ['class' => 'form-control']) }}
                         </div>
 
+                        <label for="lastname">Nama Subtask</label>
+                        <select class="form-control" name="nama" id="nama" data-parsley-required="true">
+                            @foreach ($subtasks as $subtask)
+                                {
+                                <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
+                                }
+                            @endforeach
+                        </select>
+
                         <br>
 
                         <div class="form-group">
@@ -326,6 +340,21 @@
 @endsection
 
 @section('js')
+    <script>
+        $(function () {
+            $('#tombol').on('click', function () {
+                $('<label for="nama">Nama</label>\n' +
+                    '        <select class="form-control" name="nama[]" id="nama" data-parsley-required="true">\n' +
+                    '          @foreach ($users as $user) \n' +
+                    '          {\n' +
+                    '            <option value="{{ $user->id }}" id="nama[]">{{ $user->name }}</option>\n' +
+                    '          }\n' +
+                    '          @endforeach\n' +
+                    '        </select><br>\n').appendTo('#list_anggota');
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
