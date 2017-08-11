@@ -68,7 +68,7 @@ class DokumenController extends Controller
 
         Session::flash('message', 'File sukses diupload');
 
-        return redirect()->route('proyek.show', $request->kode_proyek);
+        return redirect()->route('kegiatan.show', $request->kode_proyek);
 
     }
 
