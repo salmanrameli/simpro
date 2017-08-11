@@ -6882,7 +6882,10 @@ button.close {
 {
   border-left:solid 3px #75D900;
 }
-.bg-red
-{
-  background-color: red;
-}
+#col_kode_kegiatan { width: 14%; }
+#col_nama_kegiatan { width: 14%; }
+#col_nama_pemilik { width: 14%; }
+#col_tanggal_mulai { width: 14%; }
+#col_target_selesai { width: 14%; }
+#col_status { width: 14%; }
+#col_tombol_detail { width: 14%}
