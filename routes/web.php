@@ -11,6 +11,9 @@
 |
 */
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -50,42 +53,94 @@ Route::get('kegiatan/belum_selesai/{id}', [
     'uses' => 'KegiatanController@belum_selesai'
 ]);
 
+Route::any('kegiatan/cari', function() {
+    $kategori = Input::get('kategori');
+    $query = Input::get('query');
+
+    switch ($kategori)
+    {
+        case '0':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')
+                ->orWhere('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')
+                ->orWhere('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')
+                ->orWhere('kegiatan.tanggal_target_selesai', 'like', '%'.$query.'%')
+                ->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '1':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '2':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '4':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '5':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+    }
+});
+
+Route::any('kegiatan/cari/tanggal', function() {
+    $mulai = Input::get('tgl_mulai');
+    $selesai = Input::get('tgl_selesai');
+
+    $query = $mulai . ' - ' . $selesai;
+
+    $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+        ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
+
+//    $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+//        ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])
+//        ->orWhereRaw('? BETWEEN kegiatan.tanggal_mulai AND kegiatan.tanggal_target_selesai', [$mulai])
+//        ->get();
+
+    return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+});
+
 Route::post('kegiatan/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('kegiatan.tambah_anggota_proyek')->uses('KegiatanController@tambah_anggota_proyek');
 
 Route::get('kegiatan/{id}/hapus_anggota/{kode}')->name('kegiatan.hapus_anggota')->uses('KegiatanController@hapus_anggota_proyek');
 
-Route::resource('proyek_progress', 'ProyekProgressController');
+Route::resource('subtask', 'KegiatanSubtaskController');
 
-Route::get('proyek_progress/{id}/create', [
-    'as' => 'proyek_progress.create',
-    'uses' => 'ProyekProgressController@create'
+Route::get('subtask/{id}/kerjakan', [
+    'as' => 'subtask.kerjakan',
+    'uses' => 'KegiatanSubtaskController@kerjakan'
 ]);
 
-Route::get('proyek_progress/{id}/destroy', [
-    'as' => 'proyek_progress.destroy',
-    'uses' => 'ProyekProgressController@destroy'
+Route::get('subtask/{id}/pindah_kanan', [
+    'as' => 'subtask.pindah_kanan',
+    'uses' => 'KegiatanSubtaskController@pindah_kanan'
 ]);
 
-Route::resource('proyek_tugas', 'ProyekTugasController');
-
-Route::get('proyek_tugas/{id}/kerjakan', [
-    'as' => 'proyek_tugas.kerjakan',
-    'uses' => 'ProyekTugasController@kerjakan'
+Route::get('subtask/{id}/pindah_kiri', [
+    'as' => 'subtask.pindah_kiri',
+    'uses' => 'KegiatanSubtaskController@pindah_kiri'
 ]);
 
-Route::get('proyek_tugas/{id}/pindah_kanan', [
-    'as' => 'proyek_tugas.pindah_kanan',
-    'uses' => 'ProyekTugasController@pindah_kanan'
-]);
-
-Route::get('proyek_tugas/{id}/pindah_kiri', [
-    'as' => 'proyek_tugas.pindah_kiri',
-    'uses' => 'ProyekTugasController@pindah_kiri'
-]);
-
-Route::get('proyek_tugas/{id}/destroy', [
-    'as' => 'proyek_tugas.destroy',
-    'uses' => 'ProyekTugasController@destroy'
+Route::get('subtask/{id}/destroy', [
+    'as' => 'subtask.destroy',
+    'uses' => 'KegiatanSubtaskController@destroy'
 ]);
 
 Route::group(['middleware' => 'checkRole:1'], function () {

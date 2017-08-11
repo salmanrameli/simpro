@@ -5,67 +5,198 @@
     @endsection
 
 @section('content')
-    <a href="{{ route('kegiatan.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Aktivitas Baru</a><br>
 
     <div id="id_user" class="hidden">{{ \Illuminate\Support\Facades\Auth::id() }}</div>
 
     <div class="row">
+        <a href="{{ route('kegiatan.create') }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Aktivitas Baru</a>
         <h1>Kegiatan</h1><hr>
-        Pilih filter:
-        <select id="sortlist">
-            <option value="none">None</option>
-            <option value="now">Hari Ini</option>
-            <option value="tgl_asc">Lama ke Baru</option>
-            <option value="tgl_desc">Baru ke Lama</option>
-            <option value="milik_saya">Kegiatan Milik Saya</option>
-        </select>
-        <form>
-            <br>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-                <input type="text" id="myInput" placeholder="Masukkan teks pencarian disini" class="form-control">
+
+        <div class="col-lg-6">
+            {{ Form::open(['url' => 'kegiatan/cari']) }}
+
+            <div class="form-group">
+                {{ Form::label('cari', 'Cari: ', ['class' => 'control-label']) }}
+                {{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'Kode Kegiatan', '2' => 'Nama Kegiatan', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}
+
+                {{ Form::text('query', null, ['class' => 'form-control']) }}
             </div>
-        </form>
+
+            {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
+            {{ Form::close() }}
+        </div>
+        {{ Form::open(['url' => 'kegiatan/cari/tanggal']) }}
+
+        <div class="col-lg-3">
+            {{ Form::label('cari', 'Tanggal Mulai: ', ['class' => 'control-label']) }}
+            {{ Form::date('tgl_mulai', null, ['class' => 'form-control']) }}<br>
+        </div>
+
+        <div class="col-lg-3">
+            {{ Form::label('cari', 'Tanggal Target Selesai: ', ['class' => 'control-label']) }}<br>
+            {{ Form::date('tgl_selesai', null, ['class' => 'form-control']) }}<br>
+        </div>
+
+        {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
+        {{ Form::close() }}
     </div>
     <br>
-
-    <table class="table" id="tabel">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nama Kegiatan</th>
-            <th>Nama Ketua</th>
-            <th>Tanggal Mulai</th>
-            <th>Target Selesai</th>
-            <th>Status</th>
-            <th>Detail</th>
-            <th></th>
-        </tr>
-        <tr>
-
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($proyeks as $proyek)
-            <tr class="Entries">
-                <td>{{ $proyek->kode_kegiatan }}</td>
-                <td>{{ $proyek->nama_kegiatan }}</td>
-                <td>{{ $proyek->name }}</td>
-                <td>{{ $proyek->tanggal_mulai }}</td>
-                <td id="target_selesai">{{ $proyek->tanggal_target_selesai }}</td>
-                <td></td>
-                <td><a href="{{ route('kegiatan.show', ['id' => $proyek->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
-                <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
-                <td class="hidden">{{ $proyek->id_pemilik_kegiatan }}</td>
-                <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+    {{--<table class="table">--}}
+        {{--<thead>--}}
+        {{--<tr>--}}
+            {{--<th>ID</th>--}}
+            {{--<th>Nama Kegiatan</th>--}}
+            {{--<th>Nama Ketua</th>--}}
+            {{--<th>Tanggal Mulai</th>--}}
+            {{--<th>Target Selesai</th>--}}
+            {{--<th>Status</th>--}}
+            {{--<th>Detail</th>--}}
+            {{--<th></th>--}}
+        {{--</tr>--}}
+        {{--</thead>--}}
+    {{--</table>--}}
+    <div class="scroll">
+        <table class="table" id="tabel">
+            @foreach($proyeks as $proyek)
+                <tr class="Entries">
+                    <td id="col_kode_kegiatan">{{ $proyek->kode_kegiatan }}</td>
+                    <td id="col_nama_kegiatan">{{ $proyek->nama_kegiatan }}</td>
+                    <td id="col_nama_pemilik">{{ $proyek->name }}</td>
+                    <td id="col_tanggal_mulai">{{ $proyek->tanggal_mulai }}</td>
+                    <td id="target_selesai; col_target_selesai">{{ $proyek->tanggal_target_selesai }}</td>
+                    <td id="col_status"></td>
+                    <td id="col_tombol_detail"><a href="{{ route('kegiatan.show', ['id' => $proyek->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
+                    <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
+                    <td class="hidden">{{ $proyek->id_pemilik_kegiatan }}</td>
+                    <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>
+                </tr>
+            @endforeach
+        </table>
+        <div class="hidden">{{ $proyeks->links() }}</div>
+    </div>
 
 @endsection
 
 @section('js')
+    <script>
+        var table = $("#tabel").find("tbody");
+
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        table.find('tr').each(function (i) {
+            var $tds = $(this).find('td');
+            var tanggal_mulai = $tds.eq(3).text();
+            var tanggal_target = $tds.eq(9).text();
+            var d = new Date(tanggal_mulai);
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth(); //Months are zero based
+            var curr_year = d.getFullYear();
+
+            $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+
+            var tanggal_selesai = $tds.eq(4).text();
+            d = new Date(tanggal_selesai);
+            var fin_date = d.getDate();
+            var fin_month = d.getMonth(); //Months are zero based
+            var fin_year = d.getFullYear();
+
+            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+
+            var curdate = new Date().toISOString().substring(0, 10);
+
+            var x = 9;
+
+            if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
+            {
+                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
+            }
+            else if(tanggal_target !== '0000-00-00')
+            {
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
+            }
+            else {
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+            }
+
+        });
+
+        $(window).scroll(function() {
+            if($(window).scrollTop() + $(window).height() === $(document).height()) {
+
+            }
+        });
+    </script>
+    <script>
+        $(function() {
+            $('.scroll').jscroll({
+                autoTrigger: true,
+                nextSelector: '.pagination li.active + li a',
+                contentSelector: 'div.scroll',
+                callback: function() {
+                    $('ul.pagination:visible:first').hide();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        /*
+        Javascript untuk mengatur status proyek – on-track atau terlambat – dan memberikan warna background yang sesuai
+         */
+        var table = $("#tabel").find("tbody");
+
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+        function label()
+        {
+            table.find('tr').each(function (i) {
+                var $tds = $(this).find('td');
+                var tanggal_mulai = $tds.eq(3).text();
+                var tanggal_target = $tds.eq(9).text();
+                var d = new Date(tanggal_mulai);
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth(); //Months are zero based
+                var curr_year = d.getFullYear();
+
+                $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+
+                var tanggal_selesai = $tds.eq(4).text();
+                d = new Date(tanggal_selesai);
+                var fin_date = d.getDate();
+                var fin_month = d.getMonth(); //Months are zero based
+                var fin_year = d.getFullYear();
+
+                $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+
+                var curdate = new Date().toISOString().substring(0, 10);
+
+                var x = 9;
+
+                if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
+                {
+                    $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
+                }
+                else if(tanggal_target !== '0000-00-00')
+                {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
+                }
+                else {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+                }
+
+            });
+        }
+    </script>
+
     <script>
         /*
         Javascript untuk melakukan filter tabel berdasarkan menu dropdown yang dipilih oleh user
@@ -120,56 +251,6 @@
                 }
 
             });
-        });
-    </script>
-    <script>
-        /*
-        Javascript untuk mengatur status proyek – on-track atau terlambat – dan memberikan warna background yang sesuai
-         */
-        var table = $("#tabel").find("tbody");
-
-        var monthNames = [
-            "January", "February", "March",
-            "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"
-        ];
-
-        table.find('tr').each(function (i) {
-            var $tds = $(this).find('td');
-            var tanggal_mulai = $tds.eq(3).text();
-            var tanggal_target = $tds.eq(9).text();
-            var d = new Date(tanggal_mulai);
-            var curr_date = d.getDate();
-            var curr_month = d.getMonth(); //Months are zero based
-            var curr_year = d.getFullYear();
-
-            $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
-
-            var tanggal_selesai = $tds.eq(4).text();
-            d = new Date(tanggal_selesai);
-            var fin_date = d.getDate();
-            var fin_month = d.getMonth(); //Months are zero based
-            var fin_year = d.getFullYear();
-
-            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
-
-            var curdate = new Date().toISOString().substring(0, 10);
-
-            var x = 9;
-
-            if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
-            {
-                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
-            }
-            else if(tanggal_target !== '0000-00-00')
-            {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
-            }
-            else {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
-            }
-
         });
     </script>
 
