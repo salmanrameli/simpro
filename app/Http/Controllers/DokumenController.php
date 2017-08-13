@@ -40,7 +40,7 @@ class DokumenController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'kode_proyek' => 'required',
+            'kode_kegiatan' => 'required',
             'nama_dokumen' => 'required',
             'dokumen' => 'required'
         ]);
@@ -50,25 +50,26 @@ class DokumenController extends Controller
         $file = $request->file('dokumen');
         $filename = $file->getClientOriginalName();
         $filetype = $file->getClientMimeType();
-        $path = storage_path(). '/proyek/'. $request->kode_proyek . '/';
+        $path = storage_path(). '/kegiatan/'. $request->kode_proyek . '/';
         $file->move($path, $filename);
 
-        $dokumen->nama_dokumen = $request->nama_dokumen;
-        $dokumen->dokumen = $filename;
-        $dokumen->kode_proyek = $request->kode_proyek;
+        $dokumen->kode_kegiatan = $request->kode_proyek;
+        $dokumen->id_subtask = DB::table('kegiatan_subtask')->where('nama_subtask', $request->nama_tugas)->value('id');
         $dokumen->id_pegawai = Auth::id();
+        $dokumen->judul = $request->nama_dokumen;
+        $dokumen->dokumen = $filename;
         $dokumen->tipe = $filetype;
         $dokumen->save();
 
         $log = new Log();
 
         $log->id_pegawai = Auth::id();
-        $log->data = "upload file proyek " . $request->kode_proyek . " nama " . $filename;
+        $log->data = "upload file kegiatan " . $request->kode_kegiatan . " nama " . $filename;
         $log->save();
 
         Session::flash('message', 'File sukses diupload');
 
-        return redirect()->route('kegiatan.show', $request->kode_proyek);
+        return redirect()->route('kegiatan.show', $request->kode_kegiatan);
 
     }
 
@@ -82,7 +83,7 @@ class DokumenController extends Controller
     {
         $nama = DB::table('dokumen')->where('id', $id)->value('dokumen');
 
-        return response()->file(storage_path("/proyek/{$kode}/{$nama}"));
+        return response()->file(storage_path("/kegiatan/{$kode}/{$nama}"));
     }
 
     /**
@@ -120,14 +121,14 @@ class DokumenController extends Controller
 
         $nama = DB::table('dokumen')->where('id', $id)->value('dokumen');
 
-        unlink(storage_path('/proyek/'. $kode . '/' . $nama));
+        unlink(storage_path('/kegiatan/'. $kode . '/' . $nama));
 
         $tabel->delete();
 
         $log = new Log();
 
         $log->id_pegawai = Auth::id();
-        $log->data = "menghapus file proyek " . $kode . " nama " . $nama;
+        $log->data = "menghapus file dari kegiatan " . $kode . " nama " . $nama;
         $log->save();
 
         Session::flash('message', 'Dokumen berhasil dihapus');
@@ -142,9 +143,9 @@ class DokumenController extends Controller
         $log = new Log();
 
         $log->id_pegawai = Auth::id();
-        $log->data = "download file proyek " . $kode . " nama " . $nama;
+        $log->data = "download file untuk kegiatan " . $kode . " nama " . $nama;
         $log->save();
 
-        return response()->download(storage_path("/proyek/{$kode}/{$nama}"));
+        return response()->download(storage_path("/kegiatan/{$kode}/{$nama}"));
     }
 }
