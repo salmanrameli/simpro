@@ -9,6 +9,6 @@ class Dokumen extends Model
     protected $table = 'dokumen';
 
     protected $fillable = [
-        'id', 'nama_dokumen', 'dokumen', 'kode_proyek', 'id_pegawai', 'tipe'
+        'id', 'kode_kegiatan', 'id_subtask', 'id_pegawai', 'judul', 'dokumen', 'tipe'
     ];
 }
