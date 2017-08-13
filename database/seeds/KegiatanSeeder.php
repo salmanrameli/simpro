@@ -38,9 +38,9 @@ class KegiatanSeeder extends Seeder
 
             $catchphrase = $faker->catchPhrase();
 
-            $nama = substr($catchphrase, 0, 5);
+            $nama = strtoupper(substr($catchphrase, 0, 5));
 
-            $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $index . '-' . $nama;
+            $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $index . '-' . $nama;
 
             $proyek = new \App\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
@@ -95,9 +95,9 @@ class KegiatanSeeder extends Seeder
 
             $catchphrase = $faker->catchPhrase();
 
-            $nama = substr($catchphrase, 0, 5);
+            $nama = strtoupper(substr($catchphrase, 0, 5));
 
-            $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $index . '-' . $nama;
+            $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $index . '-' . $nama;
 
             $proyek = new \App\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
@@ -152,9 +152,9 @@ class KegiatanSeeder extends Seeder
 
             $catchphrase = $faker->catchPhrase();
 
-            $nama = substr($catchphrase, 0, 5);
+            $nama = strtoupper(substr($catchphrase, 0, 5));
 
-            $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $index . '-' . $nama;
+            $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $index . '-' . $nama;
 
             $proyek = new \App\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
@@ -209,9 +209,9 @@ class KegiatanSeeder extends Seeder
 
             $catchphrase = $faker->catchPhrase();
 
-            $nama = substr($catchphrase, 0, 5);
+            $nama = strtoupper(substr($catchphrase, 0, 5));
 
-            $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $index . '-' . $nama;
+            $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $index . '-' . $nama;
 
             $proyek = new \App\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
