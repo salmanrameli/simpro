@@ -15,9 +15,10 @@ class CreateDokumenTable extends Migration
     {
         Schema::create('dokumen', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('kode_proyek');
+            $table->string('kode_kegiatan');
+            $table->string('id_subtask');
             $table->string('id_pegawai');
-            $table->string('nama_dokumen');
+            $table->string('judul');
             $table->string('dokumen');
             $table->string('tipe');
             $table->timestamps();
