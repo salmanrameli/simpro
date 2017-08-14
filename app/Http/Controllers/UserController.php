@@ -25,30 +25,28 @@ class UserController extends Controller
 
         $message = \session('message');
 
-        return redirect('/kegiatan');
+        if($role == '1')
+        {
+            Session::flash('message', $message);
 
-//        if($role == '1')
-//        {
-//            Session::flash('message', $message);
-//
-//            return redirect()->route('administrator.index');
-//        }
-//        else if($role == '2')
-//        {
-//            Session::flash('message', $message);
-//
-//            return redirect()->route('kadiv.index');
-//        }
-//        else if($role == '3')
-//        {
-//            Session::flash('message', $message);
-//
-//            return redirect()->route('pegawai.index');
-//        }
-//        else
-//        {
-//            return view('welcome');
-//        }
+            return redirect()->route('administrator.index');
+        }
+        else if($role == '2')
+        {
+            Session::flash('message', $message);
+
+            return redirect()->route('kegiatan.index');
+        }
+        else if($role == '3')
+        {
+            Session::flash('message', $message);
+
+            return redirect()->route('kegiatan.index');
+        }
+        else
+        {
+            return view('welcome');
+        }
     }
 
     /**
