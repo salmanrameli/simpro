@@ -119,7 +119,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/bootbox.min.js') }}"></script>
     <script src="{{ asset('js/jquery.jscroll.js') }}"></script>
