@@ -53,120 +53,15 @@ Route::get('kegiatan/belum_selesai/{id}', [
     'uses' => 'KegiatanController@belum_selesai'
 ]);
 
-Route::any('kegiatan/cari', function() {
-    $kategori = Input::get('kategori');
-    $query = Input::get('query');
+Route::get('cari', [
+    'as' => 'kegiatan.cari',
+    'uses' => 'KegiatanController@cari'
+]);
 
-    switch ($kategori)
-    {
-        case '0':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')
-                ->orWhere('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')
-                ->orWhere('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')
-                ->orWhere('kegiatan.tanggal_target_selesai', 'like', '%'.$query.'%')
-                ->orWhere('users.name', 'like', '%'.$query.'%')
-                ->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '1':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '2':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '3':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('users.name', 'like', '%'.$query.'%')->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '4':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '5':
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-    }
-});
-
-Route::any('kegiatan/cari/tanggal', function() {
-    $mulai = Input::get('tgl_mulai');
-    $selesai = Input::get('tgl_selesai');
-    $kategori = Input::get('kategori');
-
-    switch ($kategori)
-    {
-        case '0':
-            $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
-
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '1':
-            $query = $mulai ;
-
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.tanggal_mulai', $mulai)->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '2':
-            $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
-
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '3':
-            $query = 'tanggal ' . $mulai;
-
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->where('kegiatan.tanggal_target_selesai', $mulai)->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-
-        case '4':
-            $query = 'tanggal ' . $mulai . ' s.d.' . $selesai;
-
-            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                ->whereBetween('kegiatan.tanggal_target_selesai', [$mulai, $selesai])->get();
-
-            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
-            break;
-    }
-
-//    $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-//        ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])
-//        ->orWhereRaw('? BETWEEN kegiatan.tanggal_mulai AND kegiatan.tanggal_target_selesai', [$mulai])
-//        ->get();
-
-});
+Route::get('tanggal', [
+    'as' => 'kegiatan.cari_tanggal',
+    'uses' => 'KegiatanController@cari_tanggal'
+]);
 
 Route::post('kegiatan/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('kegiatan.tambah_anggota_proyek')->uses('KegiatanController@tambah_anggota_proyek');
 
@@ -200,6 +95,16 @@ Route::group(['middleware' => 'checkRole:1'], function () {
     Route::get('/administrator/{id}/ubah_password', [
         'as' => 'administrator.ubah_password',
         'uses' => 'AdministratorController@ubah_password'
+    ]);
+
+    Route::get('user/create', [
+        'as' => 'user.create',
+        'uses' => 'UserController@create'
+    ]);
+
+    Route::post('user', [
+        'as' => 'user.store',
+        'uses' => 'UserController@store'
     ]);
 });
 

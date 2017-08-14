@@ -10,36 +10,74 @@
     </div>
     <div class="row">
         <div class="col-lg-6">
-            {{ Form::open(['url' => 'kegiatan/cari']) }}
+            <form action="{{ url('cari') }}" method="GET">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="cari" class="control-label">Cari</label>
+                        <input type="text" class="form-control" name="query" placeholder="Masukkan pencarian anda disini">
+                    </div>
+                    <label for="kategori" class="control-label">Cari di kolom: &nbsp;</label>
+                    <select id="kategori" name="kategori">
+                        <option value="0">Semua Kolom</option>
+                        <option value="1">ID Kegiatan</option>
+                        <option value="2">Nama Kegiatan</option>
+                        <option value="3">Kepala PIC</option>
+                        <option value="4">Tanggal Mulai</option>
+                        <option value="5">Target Selesai</option>
+                    </select>
+                    <button type="submit" class="btn btn-default pull-right">Cari</button>
+                </div>
+            </form>
+            {{--{{ Form::open(['url' => 'kegiatan/cari']) }}--}}
 
-            <div class="form-group">
-                {{ Form::label('query', 'Cari', ['class' => 'control-label']) }}
-                {{ Form::text('query', null, ['class' => 'form-control', 'placeholder' => 'Masukkan pencarian anda disini']) }}
+            {{--<div class="form-group">--}}
+                {{--{{ Form::label('query', 'Cari', ['class' => 'control-label']) }}--}}
+                {{--{{ Form::text('query', null, ['class' => 'form-control', 'placeholder' => 'Masukkan pencarian anda disini']) }}--}}
+            {{--</div>--}}
+
+            {{--{{ Form::label('cari', 'Cari di kolom:&nbsp;', ['class' => 'control-label']) }}--}}
+            {{--{{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'ID Kegiatan', '2' => 'Nama Kegiatan', '3' => 'Kepala PIC', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}--}}
+
+            {{--{{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}--}}
+            {{--{{ Form::close() }}--}}
+        </div>
+
+        <form action="{{ url('tanggal') }}" method="GET">
+            <div class="col-lg-3">
+                <label for="tanggal_1" class="control-label">Tanggal 1</label>
+                <input type="date" class="form-control" name="tgl_mulai" placeholder="YYYY-MM-DD"><br>
             </div>
+            <div class="col-lg-3">
+                <label for="tanggal_2" class="control-label">Tanggal 2</label>
+                <input type="date" class="form-control" name="tgl_selesai" placeholder="YYYY-MM-DD"><br>
+            </div>
+            <label for="cari" class="control-label" style="padding-left: 18px">Cari di Tanggal: </label>
+            <select id="kategori" name="kategori">
+                <option value="0">Tanggal Mulai s.d. Target Selesai</option>
+                <option value="1">Tanggal Mulai</option>
+                <option value="2">Tanggal Mulai 1 s.d. Tanggal Mulai 2</option>
+                <option value="3">Target Selesai</option>
+                <option value="4">Target Selesai 1 s.d. Target Selesai 2</option>
+            </select>
+            <button type="submit" class="btn btn-default pull-right">Cari</button>
+        </form>
 
-            {{ Form::label('cari', 'Cari di kolom:&nbsp;', ['class' => 'control-label']) }}
-            {{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'ID Kegiatan', '2' => 'Nama Kegiatan', '3' => 'Kepala PIC', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}
+        {{--{{ Form::open(['url' => 'kegiatan/cari/tanggal']) }}--}}
+        {{--<div class="col-lg-3">--}}
+            {{--{{ Form::label('cari', 'Tanggal 1:', ['class' => 'control-label']) }}--}}
+            {{--{{ Form::date('tgl_mulai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>--}}
+        {{--</div>--}}
 
-            {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
-            {{ Form::close() }}
-        </div>
+        {{--<div class="col-lg-3">--}}
+            {{--{{ Form::label('cari', 'Tanggal 2: ', ['class' => 'control-label']) }}<br>--}}
+            {{--{{ Form::date('tgl_selesai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>--}}
+        {{--</div>--}}
 
-        {{ Form::open(['url' => 'kegiatan/cari/tanggal']) }}
-        <div class="col-lg-3">
-            {{ Form::label('cari', 'Tanggal 1:', ['class' => 'control-label']) }}
-            {{ Form::date('tgl_mulai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>
-        </div>
+        {{--{{ Form::label('cari', 'Cari di Tanggal: ', ['class' => 'control-label']) }}--}}
+        {{--{{ Form::select('kategori', ['0' => 'Tanggal Mulai – Target Selesai', '1' => 'Tanggal Mulai', '2' => 'Tanggal Mulai 1 – Tanggal Mulai 2', '3' => 'Target Selesai', '4' => 'Target Selesai 1 – Target Selesai 2', '5' => '?']) }}--}}
 
-        <div class="col-lg-3">
-            {{ Form::label('cari', 'Tanggal 2: ', ['class' => 'control-label']) }}<br>
-            {{ Form::date('tgl_selesai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>
-        </div>
-
-        {{ Form::label('cari', 'Cari di Tanggal: ', ['class' => 'control-label']) }}
-        {{ Form::select('kategori', ['0' => 'Tanggal Mulai – Target Selesai', '1' => 'Tanggal Mulai', '2' => 'Tanggal Mulai 1 – Tanggal Mulai 2', '3' => 'Target Selesai', '4' => 'Target Selesai 1 – Target Selesai 2', '5' => '?']) }}
-
-        {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
-        {{ Form::close() }}
+        {{--{{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}--}}
+        {{--{{ Form::close() }}--}}
     </div>
 
     <br>

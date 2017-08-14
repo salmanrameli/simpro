@@ -25,11 +25,16 @@ class KegiatanController extends Controller
      */
     public function index()
     {
+        $paginate = 10;
         /*
          * Menampilkan semua proyek jika user termasuk salah satu anggotanya.
          * Diurutkan berdasarkan kolom created_at secara ascending.
          */
-        $kegiatan = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')->orderBy('kegiatan.created_at', 'asc')->get();
+        $kegiatan = DB::table('kegiatan')
+            ->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')
+            ->select('kegiatan.*', 'users.name')
+            ->orderBy('kegiatan.created_at', 'desc')
+            ->paginate($paginate);
 
         return view('kegiatan.index')
             ->with('proyeks', $kegiatan);
@@ -86,7 +91,7 @@ class KegiatanController extends Controller
         $tahun = substr($tahun, -2);
 
         $nama = $request->nama_proyek;
-        $nama = substr($nama, 0, 5);
+        $nama = strtoupper(substr($nama, 0, 5));
 
         if($tanggal != $terakhir[2])
         {
@@ -97,7 +102,7 @@ class KegiatanController extends Controller
             $antrian += 1;
         }
 
-        $kode_kegiatan = $tanggal . '-' . $bulan . '-' . $tahun . '-' . $antrian . '-' . $nama;
+        $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $antrian . '-' . $nama;
 
 //        Session::flash('message', $kode_kegiatan);
 //
@@ -107,7 +112,6 @@ class KegiatanController extends Controller
         $this->validate($request, [
             'nama_proyek' => 'required',
             'deskripsi_proyek' => 'required',
-            'tanggal_target_selesai' => 'required|date'
         ]);
 
         $kode = $request->kode_proyek;
@@ -216,7 +220,15 @@ class KegiatanController extends Controller
 
         $anggota_proyek = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('kegiatan_anggota.kode_kegiatan', $id)->simplePaginate($paginate);
 
-        $dokumen = DB::table('dokumen')->join('users', 'dokumen.id_pegawai', '=', 'users.id')->select('dokumen.*', 'users.name')->where('kode_proyek', $id)->simplePaginate($paginate);
+        $dokumen = DB::table('dokumen')
+            ->join('users', 'dokumen.id_pegawai', '=', 'users.id')
+            ->join('kegiatan_subtask', 'dokumen.id_subtask', '=', 'kegiatan_subtask.id')
+            ->select('dokumen.*', 'users.name', 'kegiatan_subtask.nama_subtask')->where('dokumen.kode_kegiatan', $id)
+            ->get();
+
+        $user = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kegiatan_anggota.kode_kegiatan', $id)->get();
+
+        $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->groupBy('nama_subtask')->get();
 
         if($pemilik_proyek == $uid)
         {
@@ -234,15 +246,17 @@ class KegiatanController extends Controller
                 ->with('selesais', $tugas_selesai)
                 ->with('kode', $id)
                 ->with('anggotas', $anggota_proyek)
-                ->with('dokumens', $dokumen);
+                ->with('dokumens', $dokumen)
+                ->with('users', $user)
+                ->with('subtasks', $kegiatan);
         }
         else
         {
-            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1']])->latest('updated_at')->get();
 
-            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2']])->latest('updated_at')->get();
 
-            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3'], ['id_pegawai_mengerjakan', $uid]])->latest('updated_at')->get();
+            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3']])->latest('updated_at')->get();
 
             return view('kegiatan.show')
                 ->with('deskripsi', $deskripsi_proyek)
@@ -252,7 +266,9 @@ class KegiatanController extends Controller
                 ->with('selesais', $tugas_selesai)
                 ->with('kode', $id)
                 ->with('anggotas', $anggota_proyek)
-                ->with('dokumens', $dokumen);
+                ->with('dokumens', $dokumen)
+                ->with('users', $user)
+                ->with('subtasks', $kegiatan);
         }
     }
 
@@ -339,11 +355,11 @@ class KegiatanController extends Controller
     public function anggota_proyek($id)
     {
         /*
-         * Menampilkan daftar pegawai yang menjadi anggota proyek dari proyek yang dipilih.
+         * Menampilkan daftar pegawai yang menjadi anggota kegiatan dari kegiatan yang dipilih.
          */
         $uid = Auth::id();
 
-        $anggota = DB::table('proyek_anggota')->join('users', 'proyek_anggota.id_pegawai', '=', 'users.id')->select('proyek_anggota.*', 'users.name')->where('kode_proyek', $id)->where('proyek_anggota.id_pegawai', '<>', $uid)->get();
+        $anggota = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kode_kegiatan', $id)->where('kegiatan_anggota.id_pegawai', '<>', $uid)->get();
 
         return view('kegiatan.hapus_anggota')->with('users', $anggota)->with('kode', $id);
     }
@@ -353,7 +369,7 @@ class KegiatanController extends Controller
         /*
          * Menghapus anggota yang dipilih dari proyek.
          */
-        DB::table('proyek_anggota')->where([['kode_proyek', '=', $id], ['id_pegawai', $kode]])->delete();
+        DB::table('kegiatan_anggota')->where([['kode_kegiatan', '=', $id], ['id_pegawai', $kode]])->delete();
 
         /*
          * Mencatat kegiatan yang dilakukan ke tabel log.
@@ -361,7 +377,7 @@ class KegiatanController extends Controller
         $log = new Log();
 
         $log->id_pegawai = Auth::id();
-        $log->data = "menghapus pegawai " . $kode . " dari proyek " . $id;
+        $log->data = "menghapus pegawai " . $kode . " dari kegiatan " . $id;
         $log->save();
 
         $message = "Anggota berhasil dihapus";
@@ -374,13 +390,13 @@ class KegiatanController extends Controller
         /*
          * Menampilkan daftar pegawai yang bukan anggota dari proyek.
          */
-        $anggota_sekarang = Kegiatan_Anggota::where('kode_proyek', '=', $id)->pluck('id_pegawai')->toArray();
+        $anggota_sekarang = Kegiatan_Anggota::where('kode_kegiatan', '=', $id)->pluck('id_pegawai')->toArray();
 
-        $nama_proyek = DB::table('proyek_anggota')->where('kode_proyek', $id)->value('nama_proyek');
+        $nama_proyek = DB::table('kegiatan_anggota')->where('kode_kegiatan', $id)->value('nama_kegiatan');
 
         $users = DB::table('users')->whereNotIn('id', $anggota_sekarang)->get();
 
-        return view('kegiatan.tambah_anggota')->with('users', $users)->with('kode', $id)->with('nama_proyek', $nama_proyek);
+        return view('kegiatan.tambah_anggota')->with('users', $users)->with('kode', $id)->with('nama_kegiatan', $nama_proyek);
     }
 
     public function tambah_anggota_proyek(Request $request, $id)
@@ -398,8 +414,8 @@ class KegiatanController extends Controller
         {
             $anggota_proyek = new Kegiatan_Anggota();
 
-            $anggota_proyek->kode_proyek = $id;
-            $anggota_proyek->nama_proyek = $request->nama_proyek;
+            $anggota_proyek->kode_kegiatan = $id;
+            $anggota_proyek->nama_kegiatan = $request->nama_proyek;
             $anggota_proyek->id_pegawai = $name;
             $anggota_proyek->save();
 
@@ -409,7 +425,7 @@ class KegiatanController extends Controller
             $log = new Log();
 
             $log->id_pegawai = Auth::id();
-            $log->data = "menambah pegawai " . $name . " ke proyek " . $id;
+            $log->data = "menambah pegawai " . $name . " ke kegiatan " . $id;
             $log->save();
         }
 
@@ -422,15 +438,149 @@ class KegiatanController extends Controller
     {
         $sekarang = Carbon::now()->toDateString();
 
-        DB::table('kegiatan')->where('kode_proyek', $id)->update(['tanggal_realisasi' => $sekarang]);
+        DB::table('kegiatan')->where('kode_kegiatan', $id)->update(['tanggal_realisasi' => $sekarang]);
 
         return redirect()->back()->with('message', 'Kegiatan berhasil ditandai selesai');
     }
 
     public function belum_selesai($id)
     {
-        DB::table('kegiatan')->where('kode_proyek', $id)->update(['tanggal_realisasi' => '0000-00-00']);
+        DB::table('kegiatan')->where('kode_kegiatan', $id)->update(['tanggal_realisasi' => '0000-00-00']);
 
-        return redirect()->route('kegiatan.index')->with('message', 'Kegiatan berhasil ditandai belum selesai');
+        return redirect()->back()->with('message', 'Kegiatan berhasil ditandai belum selesai');
+    }
+
+    public function cari(Request $request)
+    {
+        $kategori = $request->get('kategori');
+        $query = $request->get('query');
+
+        switch ($kategori)
+        {
+            case '0':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')
+                    ->orWhere('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')
+                    ->orWhere('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')
+                    ->orWhere('kegiatan.tanggal_target_selesai', 'like', '%'.$query.'%')
+                    ->orWhere('users.name', 'like', '%'.$query.'%')
+                    ->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '1':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '2':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '3':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('users.name', 'like', '%'.$query.'%')->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '4':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '5':
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+        }
+    }
+
+    public function cari_tanggal(Request $request)
+    {
+        $mulai = $request->get('tgl_mulai');
+        $selesai = $request->get('tgl_selesai');
+        $kategori = $request->get('kategori');
+
+        switch ($kategori)
+        {
+            case '0':
+                $this->validate($request, [
+                    'tgl_mulai' => 'required',
+                    'tgl_selesai' => 'required'
+                ]);
+
+                $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
+
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '1':
+                $this->validate($request, [
+                    'tgl_mulai' => 'required'
+                ]);
+
+                $query = $mulai ;
+
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.tanggal_mulai', $mulai)->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '2':
+                $this->validate($request, [
+                    'tgl_mulai' => 'required',
+                    'tgl_selesai' => 'required'
+                ]);
+
+                $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
+
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '3':
+                $this->validate($request, [
+                    'tgl_mulai' => 'required'
+                ]);
+
+                $query = 'tanggal ' . $mulai;
+
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->where('kegiatan.tanggal_target_selesai', $mulai)->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+
+            case '4':
+                $this->validate($request, [
+                    'tgl_mulai' => 'required',
+                    'tgl_selesai' => 'required'
+                ]);
+
+                $query = 'tanggal ' . $mulai . ' s.d.' . $selesai;
+
+                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                    ->whereBetween('kegiatan.tanggal_target_selesai', [$mulai, $selesai])->get();
+
+                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                break;
+        }
     }
 }
