@@ -6882,10 +6882,10 @@ button.close {
 {
   border-left:solid 3px #75D900;
 }
-#col_kode_kegiatan { width: 14%; }
-#col_nama_kegiatan { width: 14%; }
-#col_nama_pemilik { width: 14%; }
-#col_tanggal_mulai { width: 14%; }
-#col_target_selesai { width: 14%; }
-#col_status { width: 14%; }
-#col_tombol_detail { width: 14%}
+#col_kode_kegiatan { width: 12.5%; text-align: left}
+#col_nama_kegiatan { width: 25%; text-align: left}
+#col_nama_pemilik { width: 15%; text-align: center}
+#col_tanggal_mulai { width: 12.5%; text-align: center}
+#col_target_selesai { width: 12.5%; text-align: center}
+#col_status { width: 10%; text-align: center}
+#col_tombol_detail { width: 12.5%; text-align: center}
