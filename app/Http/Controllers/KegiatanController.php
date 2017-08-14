@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 
 class KegiatanController extends Controller
@@ -455,6 +456,8 @@ class KegiatanController extends Controller
         $kategori = $request->get('kategori');
         $query = $request->get('query');
 
+        $paginate = 15;
+
         switch ($kategori)
         {
             case '0':
@@ -464,44 +467,44 @@ class KegiatanController extends Controller
                     ->orWhere('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')
                     ->orWhere('kegiatan.tanggal_target_selesai', 'like', '%'.$query.'%')
                     ->orWhere('users.name', 'like', '%'.$query.'%')
-                    ->get();
+                    ->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '1':
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')->get();
+                    ->where('kegiatan.kode_kegiatan', 'like', '%'.$query.'%')->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '2':
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->get();
+                    ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '3':
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('users.name', 'like', '%'.$query.'%')->get();
+                    ->where('users.name', 'like', '%'.$query.'%')->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '4':
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->get();
+                    ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '5':
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->get();
+                    ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
         }
     }
@@ -511,6 +514,7 @@ class KegiatanController extends Controller
         $mulai = $request->get('tgl_mulai');
         $selesai = $request->get('tgl_selesai');
         $kategori = $request->get('kategori');
+        $paginate = 15;
 
         switch ($kategori)
         {
@@ -523,9 +527,9 @@ class KegiatanController extends Controller
                 $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
 
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
+                    ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '1':
@@ -536,9 +540,9 @@ class KegiatanController extends Controller
                 $query = $mulai ;
 
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_mulai', $mulai)->get();
+                    ->where('kegiatan.tanggal_mulai', $mulai)->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '2':
@@ -550,9 +554,9 @@ class KegiatanController extends Controller
                 $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
 
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])->get();
+                    ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '3':
@@ -563,9 +567,9 @@ class KegiatanController extends Controller
                 $query = 'tanggal ' . $mulai;
 
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_target_selesai', $mulai)->get();
+                    ->where('kegiatan.tanggal_target_selesai', $mulai)->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
 
             case '4':
@@ -577,9 +581,9 @@ class KegiatanController extends Controller
                 $query = 'tanggal ' . $mulai . ' s.d.' . $selesai;
 
                 $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->whereBetween('kegiatan.tanggal_target_selesai', [$mulai, $selesai])->get();
+                    ->whereBetween('kegiatan.tanggal_target_selesai', [$mulai, $selesai])->paginate($paginate);
 
-                return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
         }
     }
