@@ -65,6 +65,7 @@ Route::any('kegiatan/cari', function() {
                 ->orWhere('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')
                 ->orWhere('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')
                 ->orWhere('kegiatan.tanggal_target_selesai', 'like', '%'.$query.'%')
+                ->orWhere('users.name', 'like', '%'.$query.'%')
                 ->get();
 
             return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
@@ -80,6 +81,13 @@ Route::any('kegiatan/cari', function() {
         case '2':
             $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
                 ->where('kegiatan.nama_kegiatan', 'like', '%'.$query.'%')->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '3':
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('users.name', 'like', '%'.$query.'%')->get();
 
             return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
             break;
@@ -103,18 +111,61 @@ Route::any('kegiatan/cari', function() {
 Route::any('kegiatan/cari/tanggal', function() {
     $mulai = Input::get('tgl_mulai');
     $selesai = Input::get('tgl_selesai');
+    $kategori = Input::get('kategori');
 
-    $query = $mulai . ' - ' . $selesai;
+    switch ($kategori)
+    {
+        case '0':
+            $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
 
-    $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-        ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where([['kegiatan.tanggal_mulai', '>=', $mulai], ['kegiatan.tanggal_target_selesai', '<=', $selesai]])->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '1':
+            $query = $mulai ;
+
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.tanggal_mulai', $mulai)->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '2':
+            $query = 'tanggal ' . $mulai . ' s.d. ' . $selesai;
+
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '3':
+            $query = 'tanggal ' . $mulai;
+
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->where('kegiatan.tanggal_target_selesai', $mulai)->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+
+        case '4':
+            $query = 'tanggal ' . $mulai . ' s.d.' . $selesai;
+
+            $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
+                ->whereBetween('kegiatan.tanggal_target_selesai', [$mulai, $selesai])->get();
+
+            return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
+            break;
+    }
 
 //    $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
 //        ->whereBetween('kegiatan.tanggal_mulai', [$mulai, $selesai])
 //        ->orWhereRaw('? BETWEEN kegiatan.tanggal_mulai AND kegiatan.tanggal_target_selesai', [$mulai])
 //        ->get();
 
-    return view('kegiatan.hasil-cari')->with('results', $hasil)->with('query', $query);
 });
 
 Route::post('kegiatan/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('kegiatan.tambah_anggota_proyek')->uses('KegiatanController@tambah_anggota_proyek');

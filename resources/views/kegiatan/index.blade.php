@@ -16,45 +16,49 @@
             {{ Form::open(['url' => 'kegiatan/cari']) }}
 
             <div class="form-group">
-                {{ Form::label('cari', 'Cari: ', ['class' => 'control-label']) }}
-                {{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'Kode Kegiatan', '2' => 'Nama Kegiatan', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}
-
-                {{ Form::text('query', null, ['class' => 'form-control']) }}
+                {{ Form::label('query', 'Cari', ['class' => 'control-label']) }}
+                {{ Form::text('query', null, ['class' => 'form-control', 'placeholder' => 'Masukkan pencarian anda disini']) }}
             </div>
+
+            {{ Form::label('cari', 'Cari di kolom:&nbsp;', ['class' => 'control-label']) }}
+            {{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'ID Kegiatan', '2' => 'Nama Kegiatan', '3' => 'Kepala PIC', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}
 
             {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
             {{ Form::close() }}
         </div>
+
         {{ Form::open(['url' => 'kegiatan/cari/tanggal']) }}
-
         <div class="col-lg-3">
-            {{ Form::label('cari', 'Tanggal Mulai: ', ['class' => 'control-label']) }}
-            {{ Form::date('tgl_mulai', null, ['class' => 'form-control']) }}<br>
+            {{ Form::label('cari', 'Tanggal 1:', ['class' => 'control-label']) }}
+            {{ Form::date('tgl_mulai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>
         </div>
 
         <div class="col-lg-3">
-            {{ Form::label('cari', 'Tanggal Target Selesai: ', ['class' => 'control-label']) }}<br>
-            {{ Form::date('tgl_selesai', null, ['class' => 'form-control']) }}<br>
+            {{ Form::label('cari', 'Tanggal 2: ', ['class' => 'control-label']) }}<br>
+            {{ Form::date('tgl_selesai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>
         </div>
+
+        {{ Form::label('cari', 'Cari di Tanggal: ', ['class' => 'control-label']) }}
+        {{ Form::select('kategori', ['0' => 'Tanggal Mulai – Target Selesai', '1' => 'Tanggal Mulai', '2' => 'Tanggal Mulai 1 – Tanggal Mulai 2', '3' => 'Target Selesai', '4' => 'Target Selesai 1 – Target Selesai 2', '5' => '?']) }}
 
         {{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}
         {{ Form::close() }}
     </div>
+
     <br>
-    {{--<table class="table">--}}
-        {{--<thead>--}}
-        {{--<tr>--}}
-            {{--<th>ID</th>--}}
-            {{--<th>Nama Kegiatan</th>--}}
-            {{--<th>Nama Ketua</th>--}}
-            {{--<th>Tanggal Mulai</th>--}}
-            {{--<th>Target Selesai</th>--}}
-            {{--<th>Status</th>--}}
-            {{--<th>Detail</th>--}}
-            {{--<th></th>--}}
-        {{--</tr>--}}
-        {{--</thead>--}}
-    {{--</table>--}}
+
+    <table class="table">
+        <tr>
+            <th id="col_kode_kegiatan">ID</th>
+            <th id="col_nama_kegiatan">Nama Kegiatan</th>
+            <th id="col_nama_pemilik">Kepala PIC</th>
+            <th id="col_tanggal_mulai">Tanggal Mulai</th>
+            <th id="col_target_selesai">Target Selesai</th>
+            <th id="col_status">Status</th>
+            <th id="col_tombol_detail">Detail</th>
+            <th></th>
+        </tr>
+    </table>
     <div class="scroll">
         <table class="table" id="tabel">
             @foreach($proyeks as $proyek)
