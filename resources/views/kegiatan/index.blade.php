@@ -31,18 +31,6 @@
                     <button type="submit" class="btn btn-default pull-right">Cari</button>
                 </div>
             </form>
-            {{--{{ Form::open(['method' => 'GET', 'url' => 'kegiatan/cari']) }}--}}
-
-            {{--<div class="form-group">--}}
-                {{--{{ Form::label('query', 'Cari', ['class' => 'control-label']) }}--}}
-                {{--{{ Form::text('query', null, ['class' => 'form-control', 'placeholder' => 'Masukkan pencarian anda disini']) }}--}}
-            {{--</div>--}}
-
-            {{--{{ Form::label('cari', 'Cari di kolom:&nbsp;', ['class' => 'control-label']) }}--}}
-            {{--{{ Form::select('kategori', ['0' => 'Semua Kolom', '1' => 'ID Kegiatan', '2' => 'Nama Kegiatan', '3' => 'Kepala PIC', '4' => 'Tanggal Mulai', '5' => 'Target Selesai']) }}--}}
-
-            {{--{{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}--}}
-            {{--{{ Form::close() }}--}}
         </div>
 
         <form action="{{ url('tanggal') }}" method="GET">
@@ -64,26 +52,11 @@
             </select>
             <button type="submit" class="btn btn-default pull-right">Cari</button>
         </form>
-
-        {{--{{ Form::open(['url' => 'kegiatan/cari/tanggal']) }}--}}
-        {{--<div class="col-lg-3">--}}
-            {{--{{ Form::label('cari', 'Tanggal 1:', ['class' => 'control-label']) }}--}}
-            {{--{{ Form::date('tgl_mulai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>--}}
-        {{--</div>--}}
-
-        {{--<div class="col-lg-3">--}}
-            {{--{{ Form::label('cari', 'Tanggal 2: ', ['class' => 'control-label']) }}<br>--}}
-            {{--{{ Form::date('tgl_selesai', null, ['class' => 'form-control', 'placeholder' => 'YYYY-MM-DD']) }}<br>--}}
-        {{--</div>--}}
-
-        {{--{{ Form::label('cari', 'Cari di Tanggal: ', ['class' => 'control-label']) }}--}}
-        {{--{{ Form::select('kategori', ['0' => 'Tanggal Mulai – Target Selesai', '1' => 'Tanggal Mulai', '2' => 'Tanggal Mulai 1 – Tanggal Mulai 2', '3' => 'Target Selesai', '4' => 'Target Selesai 1 – Target Selesai 2', '5' => '?']) }}--}}
-
-        {{--{{ Form::submit('Cari', ['class' => 'btn btn-default pull-right']) }}--}}
-        {{--{{ Form::close() }}--}}
-    {{--</div>--}}
+    </div>
 
     <br>
+
+    {{ $proyeks->links() }}
 
     <table class="table">
         <tr>
@@ -105,7 +78,7 @@
                     <td id="col_nama_kegiatan">{{ $proyek->nama_kegiatan }}</td>
                     <td id="col_nama_pemilik">{{ $proyek->name }}</td>
                     <td id="col_tanggal_mulai">{{ $proyek->tanggal_mulai }}</td>
-                    <td id="target_selesai; col_target_selesai">{{ $proyek->tanggal_target_selesai }}</td>
+                    <td id="target_selesai" style="text-align: center">{{ $proyek->tanggal_target_selesai }}</td>
                     <td id="col_status"></td>
                     <td id="col_tombol_detail"><a href="{{ route('kegiatan.show', ['id' => $proyek->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
                     <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
@@ -174,16 +147,16 @@
         });
     </script>
     <script>
-        $(function() {
-            $('.scroll').jscroll({
-                autoTrigger: true,
-                nextSelector: '.pagination li.active + li a',
-                contentSelector: 'div.scroll',
-                callback: function() {
-                    $('ul.pagination:visible:first').hide();
-                }
-            });
-        });
+//        $(function() {
+//            $('.scroll').jscroll({
+//                autoTrigger: true,
+//                nextSelector: '.pagination li.active + li a',
+//                contentSelector: 'div.scroll',
+//                callback: function() {
+//                    $('ul.pagination:visible:first').hide();
+//                }
+//            });
+//        });
     </script>
 
     <script>
