@@ -11,7 +11,7 @@
         <div class="panel-body">
             You are logged in!<br><br>
             <a href="{{ route('user.create') }}" class="btn btn-default btn-block">Register User</a><br>
-            <a href="{{ route('proyek.index') }}" class="btn btn-info btn-block">Lihat Proyek</a>
+            <a href="{{ route('kegiatan.index') }}" class="btn btn-info btn-block">Lihat Kegiatan</a>
         </div>
     </div>
 
