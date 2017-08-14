@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
+    <link rel="shortcut icon" href="{{ asset('bootstrap/img/bri.ico') }}">
 </head>
 <body>
 <div id="app">
@@ -29,10 +30,11 @@
 
                 <!-- Branding Image -->
                 <a href="{{ route('home') }}">
-                    <img src="{{ asset('bootstrap/img/IMG_3521.jpg') }}" style="height: 60px; width: 160px; display: inline-block; padding-right: 20px; padding-top: 5px;" class="pull-left" href="{{ route('home') }}">
+                    <img src="{{ asset('bootstrap/img/IMG_3521.jpg') }}" style="height: 53px; width: 144px; display: inline-block; padding-right: 20px; padding-top: 5px;" class="pull-left" href="{{ route('home') }}">
                 </a>
-                {{--<a class="navbar-brand navbar-brand-text" href="{{ route('home') }}">--}}
-                    {{--Home--}}
+
+                {{--<a class="navbar-brand" href="{{ route('home') }}">--}}
+                {{--Home--}}
                 {{--</a>--}}
             </div>
 
@@ -47,7 +49,7 @@
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         <li><a href="{{ route('login') }}">Login</a></li>
-                        <li><a href="{{ route('register') }}">Register</a></li>
+                        {{--<li><a href="{{ route('register') }}">Register</a></li>--}}
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -58,18 +60,18 @@
                                 <li>
                                     <a href="{{ route('user.show', Auth::user()->id) }}"><span class="glyphicon glyphicon-user"></span> Lihat Profil</a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        <span class="glyphicon glyphicon-log-out"></span> Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
                             </ul>
+                        </li>
+                        <li>
+                            <a href="{{ route('logout') }}"
+                               onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                <span class="glyphicon glyphicon-off"></span> Logout
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
                         </li>
                     @endif
                 </ul>
@@ -80,7 +82,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
+            <div class="col-lg-12">
                 @if($errors->any())
                     <div class="alert alert-danger alert-dismissable">
                         @foreach($errors->all() as $error)
@@ -97,12 +99,12 @@
                     </div>
                 @endif
 
-                    @if(Session::has('warning'))
-                        <div class="alert alert-warning alert-dismissable">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{ Session::get('warning') }}
-                        </div>
-                    @endif
+                @if(Session::has('warning'))
+                    <div class="alert alert-warning alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ Session::get('warning') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -117,6 +119,10 @@
 </div>
 
 <!-- Scripts -->
+<script src="{{ asset('js/jquery.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/bootbox.min.js') }}"></script>
+<script src="{{ asset('js/jquery.jscroll.js') }}"></script>
+@yield('js')
 </body>
 </html>
