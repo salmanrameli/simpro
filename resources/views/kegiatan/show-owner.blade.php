@@ -10,7 +10,7 @@
             <div class="panel-body">
                 <h3>{{ $deskripsi->nama_kegiatan }}</h3>
                 <hr>
-                <h5>Deskripsi Proyek:</h5>
+                <h5>Deskripsi Kegiatan:</h5>
                 <p>{{ $deskripsi->deskripsi_kegiatan }}</p>
             </div>
         </div>
@@ -21,11 +21,11 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th>Kepala Proyek</th>
+                            <th>Pimpinan PIC</th>
                             <td>{{ $deskripsi->name }}</td>
                         </tr>
                         <tr>
-                            <th>Kode Proyek</th>
+                            <th>Kode Kegiatan</th>
                             <td>{{ $kode }}</td>
                         </tr>
                         <tr>
@@ -46,19 +46,21 @@
                 </table>
                 <a href="{{ route('kegiatan.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Proyek</a>
                 @if($deskripsi->tanggal_realisasi != '0000-00-00')
-                    <a href="{{ route('kegiatan.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai proyek belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Proyek Belum Selesai</a>
+                    <a href="{{ route('kegiatan.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai kegiatan belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Kegiatan Belum Selesai</a>
                     @elseif($deskripsi->tanggal_realisasi == '0000-00-00')
-                    <a href="{{ route('kegiatan.tandai_selesai', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai proyek selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
+                    <a href="{{ route('kegiatan.tandai_selesai', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai kegiatan selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
                 @endif
             </div>
         </div>
     </div>
     <br>
+
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-body">
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#progress"><span class="glyphicon glyphicon-stats"></span> Progress</a></li>
+                    <li><a data-toggle="tab" href="#req_selesai"><span class="glyphicon glyphicon-list"></span> Request Selesai</a></li>
                     <li><a data-toggle="tab" href="#anggota"><span class="glyphicon glyphicon-user"></span> PIC</a></li>
                     <li><a data-toggle="tab" href="#upload"><span class="glyphicon glyphicon-upload"></span> Upload</a></li>
                     <li><a data-toggle="tab" href="#download"><span class="glyphicon glyphicon-paperclip"></span> Dokumen</a></li>
@@ -67,30 +69,37 @@
                 <div class="tab-content">
                     <div id="progress" class="tab-pane fade in active">
                         <br>
-                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Buat Subtask</button>
+                        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#progress_baru"><span class="glyphicon glyphicon-plus"></span> Subtask Baru</button>
                         <div id="progress_baru" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-lg">
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Progress Proyek</h4>
-                                        <button class="btn btn-default pull-right" id="tombol">Tambah Anggota Kegiatan</button><br>
+                                        <div class="pull-right">
+                                            <button class="btn btn-danger" id="hapus">Hapus PIC</button>
+                                            <button class="btn btn-success" id="tombol">Tambah PIC</button>
+                                        </div>
                                     </div>
+
                                     {{ Form::open(['route' => 'subtask.store', 'files' => 'true']) }}
                                     <div class="modal-body row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <div class="form-group hidden">
                                                 {{ Form::text('kode_proyek', $kode, ['class' => 'form-control']) }}
                                             </div>
 
-                                            <div class="form-group hidden">
-                                                {{ Form::text('id_pembuat', \Illuminate\Support\Facades\Auth::id(), ['class' => 'form-control']) }}
+                                            <div class="form-group">
+                                                {{ Form::label('nama_tugas', 'Nama Subtask', ['class' => 'control-label']) }}
+                                                {{ Form::text('nama_subtask', null, ['class' => 'form-control']) }}
                                             </div>
 
+                                            <hr>
+                                            <h4>Upload Dokumen (Opsional)</h4><br>
                                             <div class="form-group">
-                                                {{ Form::label('nama_tugas', 'Nama Tugas', ['class' => 'control-label']) }}
-                                                {{ Form::text('nama_tugas', null, ['class' => 'form-control']) }}
+                                                {{ Form::label('judul', 'Judul Dokumen', ['class' => 'control-label']) }}
+                                                {{ Form::text('judul_dokumen', null, ['class' => 'form-control']) }}
                                             </div>
 
                                             <div class="form-group">
@@ -98,15 +107,9 @@
                                                 {{ Form::file('dokumen') }}
                                             </div>
 
-                                            <select class="form-control" name="nama" id="nama" data-parsley-required="true">
-                                                @foreach ($subtasks as $subtask)
-                                                    {
-                                                    <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
-                                                    }
-                                                @endforeach
-                                            </select>
                                         </div>
-                                        <div class="col-md-6">
+
+                                        <div class="col-lg-6">
                                             <div class="form-group" id="list_anggota">
                                                 {{ Form::label(null, 'Anggota:', ['class' => 'control-label']) }}
                                                 <br>
@@ -114,7 +117,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        {{ Form::submit('Buat Tugas', ['class' => 'btn btn-primary']) }}
+                                        {{ Form::submit('Buat Subtask', ['class' => 'btn btn-primary']) }}
                                         {{ Form::close() }}
                                     </div>
                                 </div>
@@ -124,109 +127,96 @@
 
                         <h3>Status Aktivitas</h3>
                         <br>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <div class="panel-heading" style="background-color: #00C4FB; color: white">
                                 To-Do
                             </div>
                             <br>
-                            @foreach($barus as $baru)
-                            <div class="panel panel-default">
-
-                                    <div class="panel-body left-border-blue">
-                                        {{ $baru->nama_subtask }}
-                                        <br>
-                                        <br>
-                                        <ul class="list-unstyled">
-                                            <li class="pull-right"><a href="{{ route('subtask.kerjakan', $baru->id) }}" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right"></span></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="panel-footer left-border-blue clearfix">
-                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('subtask.destroy', $baru->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
-                                            </ul>
-                                        </li>
-                                    </div>
-                            </div>
-                            @endforeach
+                            <table class="table table-striped">
+                                <tbody>
+                                @foreach($barus as $baru)
+                                    <tr>
+                                        <td>
+                                            {{ $baru->nama_subtask }}
+                                            <div class="row" style="margin-left: 0; margin-top:10px;">
+                                                <a href="{{ route('subtask.kerjakan', $baru->id) }}" class="pull-right" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right">&nbsp;</span></a>
+                                                <a href="{{ route('subtask.destroy', $baru->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-lg-3">
+
+                        <div class="col-lg-4">
                             <div class="panel-heading" style="background-color: #A62CA6; color: white">
                                 In-Progress
                             </div>
                             <br>
-                            @foreach($ongoings as $ongoing)
-                            <div class="panel panel-default">
-                                    <div class="panel-body left-border-purple">
-                                        {{ $ongoing->nama_tugas }}
-                                        <br>
-                                        <br>
-                                        <ul class="list-unstyled">
-                                            <li class="pull-right"><a href="{{ route('subtask.pindah_kanan', $ongoing->id) }}" data-toggle="tooltip" title="Pindah ke Request Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
-                                            <li class="pull-left"><a href="{{ route('subtask.pindah_kiri', $ongoing->id) }}" data-toggle="tooltip" title="Kembalikan ke To Do"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="panel-footer left-border-purple clearfix">
-                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('subtask.destroy', $ongoing->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
-                                            </ul>
-                                        </li>
-                                    </div>
-                            </div>
-                            @endforeach
+                            <table class="table table-striped">
+                                <tbody>
+                                @foreach($ongoings as $ongoing)
+                                    <tr>
+                                        <td>
+                                            {{ $ongoing->nama_subtask }}
+                                            <div class="row" style="margin-left: 0; margin-top:10px;">
+                                                <a href="{{ route('subtask.pindah_kanan', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Request selesai"><span class="glyphicon glyphicon-ok">&nbsp;</span></a>
+                                                <a href="{{ route('subtask.pindah_kiri', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Kembalikan ke To-do" onclick="return confirm('Kembalikan ke To Do?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
+                                                <a href="{{ route('subtask.destroy', $ongoing->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp;</span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-lg-3">
-                            <div class="panel-heading" style="background-color: #FDAA00; color: white">
-                                Request Selesai
-                            </div>
-                            <br>
-                            @foreach($requests as $request)
-                            <div class="panel panel-default">
-                                    <div class="panel-body left-border-orange">
-                                        {{ $request->nama_tugas }}
-                                        <br>
-                                        <br>
-                                        <ul class="list-unstyled">
-                                            <li class="pull-right"><a href="{{ route('proyek_tugas.pindah_kanan', $request->id) }}" data-toggle="tooltip" title="Setujui Selesai"><span class="glyphicon glyphicon-ok" style="padding-left: 5px"></span> </a></li>
-                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $request->id) }}" data-toggle="tooltip" title="Tolak"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="panel-footer left-border-orange clearfix">
-                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('proyek_tugas.destroy', $request->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
-                                            </ul>
-                                        </li>
-                                    </div>
-                            </div>
-                            @endforeach
-                        </div>
-                        <div class="col-lg-3">
+
+                        <div class="col-lg-4">
                             <div class="panel-heading" style="background-color: #75D900; color: white">
                                 Selesai
                             </div>
                             <br>
-                            @foreach($selesais as $selesai)
-                            <div class="panel panel-default">
-                                    <div class="panel-body left-border-green">
-                                        {{ $selesai->nama_tugas }}
-                                        <br>
-                                        <br>
-                                        <ul class="list-unstyled">
-                                            <li class="pull-left"><a href="{{ route('proyek_tugas.pindah_kiri', $selesai->id) }}" data-toggle="tooltip" title="Kembalikan ke Request Selesai" onclick="return confirm('Kembalikan ke In-Progress?')"><span class="glyphicon glyphicon-ban-circle"></span> </a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="panel-footer left-border-green clearfix">
-                                        <li class="dropdown list-unstyled pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('proyek_tugas.destroy', $selesai->id) }}" onclick="return confirm('Hapus tugas?')">Hapus</a></li>
-                                            </ul>
-                                        </li>
-                                    </div>
-                            </div>
-                            @endforeach
+                            <table class="table table-striped">
+                                <tbody>
+                                @foreach($selesais as $selesai)
+                                    <tr>
+                                        <td>
+                                            {{ $selesai->nama_subtask }}
+                                            <div class="row" style="margin-left: 0; margin-top:10px;">
+                                                <a href="{{ route('subtask.pindah_kiri', $selesai->id) }}" class="pull-right" data-toggle="tooltip" title="Kembalikan ke In-progress" onclick="return confirm('Kembalikan ke in-progress?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
+                                                <a href="{{ route('subtask.destroy', $selesai->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp;</span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+
+                    <div id="req_selesai" class="tab-pane fade">
+                        <br>
+                        <div class="panel-heading" style="background-color: #FDAA00; color: white">
+                            Request Selesai
+                        </div>
+                        <br>
+                        <table class="table table-striped">
+                            <tbody>
+                            @foreach($requests as $request)
+                                <tr>
+                                    <td>
+                                        {{ $request->nama_subtask }}
+                                        <div class="row" style="margin-left: 0; margin-top:10px;">
+                                            <a href="{{ route('subtask.pindah_kanan', $request->id) }}" class="pull-right" data-toggle="tooltip" title="Terima selesai"><span class="glyphicon glyphicon-ok">&nbsp;</span></a>
+                                            <a href="{{ route('subtask.pindah_kiri', $request->id) }}" class="pull-right" data-toggle="tooltip" title="Tolak" onclick="return confirm('Tolak & kembalikan ke in-progress?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
+                                            <a href="{{ route('subtask.destroy', $request->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp;</span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
                     <div id="anggota" class="tab-pane fade">
@@ -253,7 +243,7 @@
                                     <td>{{ $anggota->telepon }}</td>
                                     <td>
                                         @if($anggota->id == \Illuminate\Support\Facades\Auth::id())
-                                            <a href="{{ route('kegiatan.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right disabled" onclick="return confirm('Hapus anggota dari kegiatan?')" data-toggle="tooltip" title="Anda pemilik kegiatan ini"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a class="btn btn-danger pull-right disabled" data-toggle="tooltip" title="Anda pemilik kegiatan ini"><span class="glyphicon glyphicon-trash"></span></a>
                                             @else
                                             <a href="{{ route('kegiatan.hapus_anggota', ['id' => $kode, 'kode' => $anggota->id, ]) }}" class="btn btn-danger pull-right" onclick="return confirm('Hapus anggota dari kegiatan?')"><span class="glyphicon glyphicon-trash"></span></a>
                                             @endif
@@ -280,7 +270,7 @@
                             {{ Form::text('nama_dokumen', null, ['class' => 'form-control']) }}
                         </div>
 
-                        <label for="lastname">Nama Subtask</label>
+                        <label for="nama">Nama Subtask</label>
                         <select class="form-control" name="nama" id="nama" data-parsley-required="true">
                             @foreach ($subtasks as $subtask)
                                 {
@@ -311,6 +301,8 @@
                                 <tr>
                                     <th>Tanggal</th>
                                     <th>Nama Dokumen</th>
+                                    <th>Subtask</th>
+                                    <th>Tipe</th>
                                     <th>Uploader</th>
                                     <th></th>
                                 </tr>
@@ -319,7 +311,9 @@
                                 @foreach($dokumens as $dokumen)
                                     <tr>
                                         <td>{{ date('d F, Y', strtotime($dokumen->created_at)) }}</td>
-                                        <td>{{ $dokumen->nama_dokumen }}</td>
+                                        <td>{{ $dokumen->judul }}</td>
+                                        <td>{{ $dokumen->nama_subtask }}</td>
+                                        <td>{{ $dokumen->tipe }}</td>
                                         <td>{{ $dokumen->name }}</td>
                                         <td>
                                             <a onclick="return confirm('Hapus dokumen dari proyek?')" href="{{ route('dokumen.destroy', [$dokumen->id, $kode]) }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
@@ -327,7 +321,6 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            {{ $dokumens->links() }}
                             </tbody>
                         </table>
                     </div>
@@ -343,16 +336,22 @@
     <script>
         $(function () {
             $('#tombol').on('click', function () {
-                $('<label for="nama">Nama</label>\n' +
-                    '        <select class="form-control" name="nama[]" id="nama" data-parsley-required="true">\n' +
+                $(  '        <select class="form-control" name="nama[]" id="nama" data-parsley-required="true">\n' +
                     '          @foreach ($users as $user) \n' +
                     '          {\n' +
                     '            <option value="{{ $user->id }}" id="nama[]">{{ $user->name }}</option>\n' +
                     '          }\n' +
                     '          @endforeach\n' +
-                    '        </select><br>\n').appendTo('#list_anggota');
+                    '        </select>\n').appendTo('#list_anggota');
             });
         });
+    </script>
+
+    <script>
+        $('#hapus').on('click', function () {
+//            $('#nama').remove();
+            $('#list_anggota').children().last().remove();
+        })
     </script>
 
     <script>
