@@ -399,7 +399,11 @@ class KegiatanController extends Controller
             'nama_kegiatan' => 'required'
         ]);
 
-        if($jumlah <= 1)
+        if($jumlah == 0)
+        {
+            return redirect()->back()->with('warning', 'Tidak ada anggota baru yang dimasukkan');
+        }
+        else if($jumlah == 1)
         {
             $anggota_proyek = new Kegiatan_Anggota();
 
