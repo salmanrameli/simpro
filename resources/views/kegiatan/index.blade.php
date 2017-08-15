@@ -25,8 +25,6 @@
                         <option value="1">ID Kegiatan</option>
                         <option value="2">Nama Kegiatan</option>
                         <option value="3">Kepala PIC</option>
-                        <option value="4">Tanggal Mulai</option>
-                        <option value="5">Target Selesai</option>
                     </select>
                     <button type="submit" class="btn btn-default pull-right">Cari</button>
                 </div>
@@ -58,20 +56,21 @@
 
     {{ $proyeks->links() }}
 
-    <table class="table">
-        <tr>
-            <th id="col_kode_kegiatan">ID</th>
-            <th id="col_nama_kegiatan">Nama Kegiatan</th>
-            <th id="col_nama_pemilik">Kepala PIC</th>
-            <th id="col_tanggal_mulai">Tanggal Mulai</th>
-            <th id="col_target_selesai">Target Selesai</th>
-            <th id="col_status">Status</th>
-            <th id="col_tombol_detail">Detail</th>
-            <th></th>
-        </tr>
-    </table>
     <div class="scroll">
         <table class="table" id="tabel">
+            <thead>
+                <tr>
+                    <th id="col_kode_kegiatan">ID</th>
+                    <th id="col_nama_kegiatan">Nama Kegiatan</th>
+                    <th id="col_nama_pemilik">Kepala PIC</th>
+                    <th id="col_tanggal_mulai">Tanggal Mulai</th>
+                    <th id="col_target_selesai">Target Selesai</th>
+                    <th id="col_status">Status</th>
+                    <th id="col_tombol_detail">Detail</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach($proyeks as $proyek)
                 <tr class="Entries">
                     <td id="col_kode_kegiatan">{{ $proyek->kode_kegiatan }}</td>
@@ -86,8 +85,8 @@
                     <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>
                 </tr>
             @endforeach
+            </tbody>
         </table>
-        <div class="hidden">{{ $proyeks->links() }}</div>
     </div>
 
 @endsection
@@ -95,6 +94,8 @@
 @section('js')
     <script>
         var table = $("#tabel").find("tbody");
+
+        var oneDay = 86400000;
 
         var monthNames = [
             "January", "February", "March",
@@ -106,7 +107,7 @@
         table.find('tr').each(function (i) {
             var $tds = $(this).find('td');
             var tanggal_mulai = $tds.eq(3).text();
-            var tanggal_target = $tds.eq(9).text();
+            var tanggal_realisasi = $tds.eq(9).text();
             var d = new Date(tanggal_mulai);
             var curr_date = d.getDate();
             var curr_month = d.getMonth(); //Months are zero based
@@ -114,8 +115,8 @@
 
             $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
 
-            var tanggal_selesai = $tds.eq(4).text();
-            d = new Date(tanggal_selesai);
+            var target_selesai = $tds.eq(4).text();
+            d = new Date(target_selesai);
             var fin_date = d.getDate();
             var fin_month = d.getMonth(); //Months are zero based
             var fin_year = d.getFullYear();
@@ -126,11 +127,13 @@
 
             var x = 9;
 
-            if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
+            if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
             {
-                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
+                var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
+
+                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
             }
-            else if(tanggal_target !== '0000-00-00')
+            else if(tanggal_realisasi !== '0000-00-00')
             {
                 $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
             }
@@ -171,6 +174,8 @@
             "August", "September", "October",
             "November", "December"
         ];
+
+        var oneDay = 86400000;
         function label()
         {
             table.find('tr').each(function (i) {
@@ -198,7 +203,14 @@
 
                 if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
                 {
-                    $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat</td>');
+                    var selisih = Math.round(Math.abs((curdate - tanggal_target)/(oneDay)));
+
+                    var str1 = '<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat ';
+                    var str2 = selisih.concat(' </td>');
+                    var str3 = str1.concat(str2);
+
+
+                    $(this).find('td').eq(x).html('aaaa');
                 }
                 else if(tanggal_target !== '0000-00-00')
                 {
