@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dokumen;
 use App\Kegiatan_Subtask;
-use App\KegiatanSubtask;
+use App\Subtask_Anggota;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,18 +41,31 @@ class KegiatanSubtaskController extends Controller
      */
     public function store(Request $request)
     {
-        $anggotas = $request->get('nama');
+        $jumlah = count($request->get('anggota'));
+        $anggotas = $request->get('anggota');
 
-        $this->validate($request, [
-            'nama_tugas' => 'required',
-        ]);
+        $dokumen = $request->hasFile('dokumen');
 
-        if($anggotas == null)
+        if($dokumen)
+        {
+            $this->validate($request, [
+                'nama_subtask' => 'required',
+                'judul_dokumen' => 'required',
+            ]);
+        }
+        else
+        {
+            $this->validate($request, [
+                'nama_subtask' => 'required',
+            ]);
+        }
+
+        if($jumlah <= 1)
         {
             $tugas = new Kegiatan_Subtask();
             $tugas->kode_kegiatan = $request->kode_proyek;
             $tugas->id_pembuat = Auth::id();
-            $tugas->nama_subtask = $request->nama_tugas;
+            $tugas->nama_subtask = $request->nama_subtask;
             $tugas->status = '0';
             $tugas->save();
 
@@ -66,10 +79,11 @@ class KegiatanSubtaskController extends Controller
                 $path = storage_path(). '/kegiatan/'. $request->kode_proyek . '/';
                 $file->move($path, $filename);
 
-                $dokumen->nama_dokumen = $filename;
-                $dokumen->dokumen = $filename;
-                $dokumen->kode_proyek = $request->kode_proyek;
+                $dokumen->kode_kegiatan = $request->kode_proyek;
+                $dokumen->id_subtask = DB::table('kegiatan_subtask')->where('nama_subtask', $request->nama_subtask)->value('id');
                 $dokumen->id_pegawai = Auth::id();
+                $dokumen->judul = $request->judul_dokumen;
+                $dokumen->dokumen = $filename;
                 $dokumen->tipe = $filetype;
                 $dokumen->save();
             }
@@ -77,19 +91,27 @@ class KegiatanSubtaskController extends Controller
         }
         else
         {
+            $tugas = new Kegiatan_Subtask();
+            $tugas->kode_kegiatan = $request->kode_proyek;
+            $tugas->id_pembuat = Auth::id();
+            $tugas->nama_subtask = $request->nama_subtask;
+            $tugas->status = '0';
+            $tugas->save();
+
             foreach ($anggotas as $anggota)
             {
-                $tugas = new Kegiatan_Subtask();
+                $tugas = new Subtask_Anggota();
                 $tugas->kode_kegiatan = $request->kode_proyek;
-                $tugas->id_pembuat = Auth::id();
-                $tugas->nama_tugas = $request->nama_tugas;
-                $tugas->id_pegawai_mengerjakan = $anggota;
-                $tugas->status = '0';
+                $tugas->id_pegawai = $anggota;
                 $tugas->save();
             }
 
             if($request->hasFile('dokumen'))
             {
+                $this->validate($request, [
+                    'judul_dokumen'
+                ]);
+
                 $dokumen = new Dokumen();
 
                 $file = $request->file('dokumen');
@@ -98,10 +120,11 @@ class KegiatanSubtaskController extends Controller
                 $path = storage_path(). '/kegiatan/'. $request->kode_proyek . '/';
                 $file->move($path, $filename);
 
-                $dokumen->nama_dokumen = $request->nama_dokumen;
-                $dokumen->dokumen = $filename;
-                $dokumen->kode_proyek = $request->kode_proyek;
+                $dokumen->kode_kegiatan = $request->kode_proyek;
+                $dokumen->id_subtask = DB::table('kegiatan_subtask')->where('nama_subtask', $request->nama_subtask)->value('id');
                 $dokumen->id_pegawai = Auth::id();
+                $dokumen->judul = $request->judul_dokumen;
+                $dokumen->dokumen = $filename;
                 $dokumen->tipe = $filetype;
                 $dokumen->save();
             }
@@ -163,8 +186,6 @@ class KegiatanSubtaskController extends Controller
 
     public function kerjakan($id)
     {
-        DB::table('kegiatan_subtask')->where('id', $id)->update(['id_pegawai_mengerjakan' => Auth::id()]);
-
         DB::table('kegiatan_subtask')->where('id', $id)->update(['updated_at' => Carbon::now()]);
 
         DB::table('kegiatan_subtask')->where('id', $id)->increment('status');

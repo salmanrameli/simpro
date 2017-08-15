@@ -227,7 +227,11 @@ class KegiatanController extends Controller
             ->select('dokumen.*', 'users.name', 'kegiatan_subtask.nama_subtask')->where('dokumen.kode_kegiatan', $id)
             ->get();
 
-        $user = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kegiatan_anggota.kode_kegiatan', $id)->get();
+        $user = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kegiatan_anggota.kode_kegiatan', $id)->orderBy('users.name', 'asc')->get();
+
+        $anggota_sekarang = Kegiatan_Anggota::where('kode_kegiatan', '=', $id)->pluck('id_pegawai')->toArray();
+
+        $pegawai = DB::table('users')->whereNotIn('id', $anggota_sekarang)->orderBy('name', 'asc')->get();
 
         $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->groupBy('nama_subtask')->get();
 
@@ -249,7 +253,8 @@ class KegiatanController extends Controller
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen)
                 ->with('users', $user)
-                ->with('subtasks', $kegiatan);
+                ->with('subtasks', $kegiatan)
+                ->with('pegawais', $pegawai);
         }
         else
         {
@@ -361,18 +366,6 @@ class KegiatanController extends Controller
         //
     }
 
-    public function anggota_proyek($id)
-    {
-        /*
-         * Menampilkan daftar pegawai yang menjadi anggota kegiatan dari kegiatan yang dipilih.
-         */
-        $uid = Auth::id();
-
-        $anggota = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kode_kegiatan', $id)->where('kegiatan_anggota.id_pegawai', '<>', $uid)->get();
-
-        return view('kegiatan.hapus_anggota')->with('users', $anggota)->with('kode', $id);
-    }
-
     public function hapus_anggota_proyek($id, $kode)
     {
         /*
@@ -394,38 +387,25 @@ class KegiatanController extends Controller
         return redirect()->route('kegiatan.show', $id)->with('message', $message);
     }
 
-    public function tambah_anggota($id)
-    {
-        /*
-         * Menampilkan daftar pegawai yang bukan anggota dari proyek.
-         */
-        $anggota_sekarang = Kegiatan_Anggota::where('kode_kegiatan', '=', $id)->pluck('id_pegawai')->toArray();
-
-        $nama_proyek = DB::table('kegiatan_anggota')->where('kode_kegiatan', $id)->value('nama_kegiatan');
-
-        $users = DB::table('users')->whereNotIn('id', $anggota_sekarang)->get();
-
-        return view('kegiatan.tambah_anggota')->with('users', $users)->with('kode', $id)->with('nama_kegiatan', $nama_proyek);
-    }
-
     public function tambah_anggota_proyek(Request $request, $id)
     {
         /*
          * Menambah pegawai yang dipilih ke dalam proyek.
          */
+        $jumlah = count($request->get('anggota'));
         $names = $request->get('anggota');
 
         $this->validate($request, [
-            'nama_proyek' => 'required'
+            'nama_kegiatan' => 'required'
         ]);
 
-        foreach ($names as $name)
+        if($jumlah <= 1)
         {
             $anggota_proyek = new Kegiatan_Anggota();
 
             $anggota_proyek->kode_kegiatan = $id;
-            $anggota_proyek->nama_kegiatan = $request->nama_proyek;
-            $anggota_proyek->id_pegawai = $name;
+            $anggota_proyek->nama_kegiatan = $request->nama_kegiatan;
+            $anggota_proyek->id_pegawai = $names[0];
             $anggota_proyek->save();
 
             /*
@@ -434,8 +414,29 @@ class KegiatanController extends Controller
             $log = new Log();
 
             $log->id_pegawai = Auth::id();
-            $log->data = "menambah pegawai " . $name . " ke kegiatan " . $id;
+            $log->data = "menambah pegawai " . $names[0] . " ke kegiatan " . $id;
             $log->save();
+        }
+        else
+        {
+            foreach ($names as $name)
+            {
+                $anggota_proyek = new Kegiatan_Anggota();
+
+                $anggota_proyek->kode_kegiatan = $id;
+                $anggota_proyek->nama_kegiatan = $request->nama_kegiatan;
+                $anggota_proyek->id_pegawai = $name;
+                $anggota_proyek->save();
+
+                /*
+                 * Mencatat kegiatan yang dilakukan ke tabel log.
+                 */
+                $log = new Log();
+
+                $log->id_pegawai = Auth::id();
+                $log->data = "menambah pegawai " . $name . " ke kegiatan " . $id;
+                $log->save();
+            }
         }
 
         $message = "Anggota berhasil ditambah";

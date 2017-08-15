@@ -77,10 +77,6 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Progress Proyek</h4>
-                                        <div class="pull-right">
-                                            <button class="btn btn-danger" id="hapus">Hapus PIC</button>
-                                            <button class="btn btn-success" id="tombol">Tambah PIC</button>
-                                        </div>
                                     </div>
 
                                     {{ Form::open(['route' => 'subtask.store', 'files' => 'true']) }}
@@ -107,13 +103,26 @@
                                                 {{ Form::file('dokumen') }}
                                             </div>
 
+                                            <div id="list_pegawai" class="hidden">
+
+                                            </div>
+
                                         </div>
 
                                         <div class="col-lg-6">
-                                            <div class="form-group" id="list_anggota">
-                                                {{ Form::label(null, 'Anggota:', ['class' => 'control-label']) }}
-                                                <br>
+                                            <div class="form-inline">
+                                                <label for="lastname" class="control-label">Nama</label>
+                                                <select class="form-control" name="pilih_pegawai" id="pilih_pegawai" data-parsley-required="true">
+                                                    @foreach ($users as $user)
+                                                        <option value="{{ $user->id_pegawai }}" id="nama[]">{{ $user->id_pegawai }} - {{ $user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="button" class="btn btn-primary" onclick="tambah_anggota()">Tambah</button>
+                                                <button type="button" class="btn btn-danger" onclick="hapus()">Kurangi</button><br><br>
                                             </div>
+                                            <ol id="list" class="row">
+
+                                            </ol>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -221,7 +230,43 @@
 
                     <div id="anggota" class="tab-pane fade">
                         <br>
-                        <a href="{{ route('kegiatan.tambah_anggota', ['id' => $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota Proyek</a>
+                        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#modal_tambah_anggota"><span class="glyphicon glyphicon-plus"></span> Tambah Anggota</button>
+                        <!-- Modal -->
+                        <div id="modal_tambah_anggota" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Tambah Anggota</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-inline">
+                                            <label for="lastname" class="control-label">Nama</label>
+                                            <select class="form-control" name="pilih_pegawai" id="pilih_pegawai" data-parsley-required="true">
+                                                @foreach ($pegawais as $pegawai)
+                                                    <option value="{{ $pegawai->id }}" id="nama[]">{{ $pegawai->id }} - {{ $pegawai->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" class="btn btn-primary" onclick="tambah_anggota()">Tambah</button>
+                                            <button type="button" class="btn btn-danger" onclick="hapus()">Kurangi</button><br><br>
+                                        </div>
+                                        <ol id="list" class="row">
+
+                                        </ol>
+
+                                        {{ Form::open(['route' => ['kegiatan.tambah_anggota_proyek', $kode]]) }}
+                                        {{ Form::text('nama_kegiatan', $deskripsi->name, ['class' => 'hidden']) }}
+                                        <div id="list_pegawai" class="hidden">
+
+                                        </div>
+                                        {{ Form::submit('Daftarkan Anggota', ['class' => 'btn btn-default']) }}
+                                        {{ Form::close() }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         <h3>PIC</h3>
                         <br>
                         <table class="table table-striped">
@@ -273,9 +318,7 @@
                         <label for="nama">Nama Subtask</label>
                         <select class="form-control" name="nama" id="nama" data-parsley-required="true">
                             @foreach ($subtasks as $subtask)
-                                {
                                 <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
-                                }
                             @endforeach
                         </select>
 
@@ -334,24 +377,26 @@
 
 @section('js')
     <script>
-        $(function () {
-            $('#tombol').on('click', function () {
-                $(  '        <select class="form-control" name="nama[]" id="nama" data-parsley-required="true">\n' +
-                    '          @foreach ($users as $user) \n' +
-                    '          {\n' +
-                    '            <option value="{{ $user->id }}" id="nama[]">{{ $user->name }}</option>\n' +
-                    '          }\n' +
-                    '          @endforeach\n' +
-                    '        </select>\n').appendTo('#list_anggota');
-            });
-        });
-    </script>
+        function tambah_anggota()
+        {
+            var listbox = document.getElementById("pilih_pegawai");
+            var id_pegawai = listbox.options[listbox.selectedIndex].value;
+            var nama_pegawai = listbox.options[listbox.selectedIndex].text;
+            nama_pegawai = nama_pegawai.split("-");
+            var input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('value', id_pegawai);
+            input.setAttribute('name', 'anggota[]');
+            input.setAttribute('id', 'anggota[]');
+            $('#list_pegawai').append(input);
+            $('#list').append('<li>' + nama_pegawai[1] + '</li>');
+        }
 
-    <script>
-        $('#hapus').on('click', function () {
-//            $('#nama').remove();
-            $('#list_anggota').children().last().remove();
-        })
+        function hapus()
+        {
+            $('#list').children().last().remove();
+            $('#list_pegawai').children().last().remove();
+        }
     </script>
 
     <script>
@@ -359,4 +404,4 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
-    @endsection()
+    @endsection
