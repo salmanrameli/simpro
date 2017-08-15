@@ -281,9 +281,17 @@ class KegiatanController extends Controller
      */
     public function edit($id)
     {
-        $proyek = DB::table('kegiatan')->where('kode_proyek', $id)->first();
+        $proyek = DB::table('kegiatan')->where('kode_kegiatan', $id)->first();
 
-        return view('kegiatan.edit')->with('kegiatan', $proyek);
+        $pemilik = $proyek->id_pemilik_kegiatan;
+
+        if(Auth::id() == $pemilik)
+        {
+            return view('kegiatan.edit')->with('kegiatan', $proyek);
+        }
+
+        return redirect()->back()->with('warning', 'Anda bukan pemilik kegiatan ini');
+
     }
 
     /**
@@ -302,30 +310,30 @@ class KegiatanController extends Controller
          */
         $this->validate($request, [
             'kode_proyek_lama' => 'required',
-            'kode_proyek' => 'required',
-            'nama_proyek' => 'required',
-            'deskripsi_proyek' => 'required',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_target_selesai' => 'required|date',
+            'kode_kegiatan' => 'required',
+            'nama_kegiatan' => 'required',
+            'deskripsi_kegiatan' => 'required',
+            'tanggal_mulai' => 'required',
+            'tanggal_target_selesai' => 'required',
         ]);
 
         $kode_lama = $request->kode_proyek_lama;
 
-        DB::table('kegiatan')->where('kode_proyek', $kode_lama)->update(
-            ['kode_proyek' => $request->kode_proyek],
-            ['nama_proyek' => $request->nama_proyek],
-            ['deskripsi_proyek' => $request->deskripsi_proyek],
-            ['tanggal_mulai' => $request->tanggal_mulai],
-            ['tanggal_target_selesai' => $request->tanggal_target_selesai]
+        DB::table('kegiatan')->where('kode_kegiatan', $kode_lama)->update(
+            ['kode_kegiatan' => $request->kode_kegiatan,
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'deskripsi_kegiatan' => $request->deskripsi_kegiatan,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_target_selesai' => $request->tanggal_target_selesai]
         );
 
-        DB::table('proyek_anggota')->where('kode_proyek', $kode_lama)->update(
-            ['kode_proyek' => $request->kode_proyek],
-            ['nama_proyek' => $request->nama_proyek]
-        );
+        DB::table('kegiatan_anggota')->where('kode_kegiatan', $kode_lama)->update([
+            'kode_kegiatan' => $request->kode_kegiatan,
+            'nama_kegiatan' => $request->nama_kegiatan
+        ]);
 
-        DB::table('proyek_progress')->where('kode_proyek', $kode_lama)->update(
-            ['kode_proyek' => $request->kode_proyek]
+        DB::table('kegiatan_subtask')->where('kode_kegiatan', $kode_lama)->update(
+            ['kode_kegiatan' => $request->kode_kegiatan]
         );
 
         /*
@@ -334,12 +342,12 @@ class KegiatanController extends Controller
         $log = new Log();
 
         $log->id_pegawai = Auth::id();
-        $log->data = "ubah proyek kode lama: " . $kode_lama . " kode baru: ". $request->kode_proyek;
+        $log->data = "ubah kegiatan kode lama: " . $kode_lama . " kode baru: ". $request->kode_kegiatan;
         $log->save();
 
-        Session::flash('message', 'Perubahan proyek berhasil disimpan');
+        Session::flash('message', 'Perubahan kegiatan berhasil disimpan');
 
-        return redirect()->route('kegiatan.show', $request->kode_proyek);
+        return redirect()->route('kegiatan.show', $request->kode_kegiatan);
     }
 
     /**

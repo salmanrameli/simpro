@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Ubah Proyek
+    Ubah Kegiatan
     @endsection()
 
 @section('content')
@@ -9,25 +9,25 @@
         <div class="panel-heading">Ubah Proyek</div>
 
         <div class="panel-body">
-            {{ Form::model($proyek, ['method' => 'PATCH', 'route' => ['proyek.update', $proyek->kode_proyek]]) }}
+            {{ Form::model($kegiatan, ['method' => 'PATCH', 'route' => ['kegiatan.update', $kegiatan->kode_kegiatan]]) }}
 
             <div class="form-group hidden">
-                {{ Form::text('kode_proyek_lama', $proyek->kode_proyek, ['class' => 'form-control']) }}
+                {{ Form::text('kode_proyek_lama', $kegiatan->kode_kegiatan, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
-                {{ Form::label('kode_proyek', 'ID Kegiatan', ['class' => 'control-label']) }}
-                {{ Form::text('kode_proyek', null, ['class' => 'form-control']) }}
+                {{ Form::label('kode_kegiatan', 'ID Kegiatan', ['class' => 'control-label']) }}
+                {{ Form::text('kode_kegiatan', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
-                {{ Form::label('nama_proyek', 'Nama Kegiatan', ['class' => 'control-label']) }}
-                {{ Form::text('nama_proyek', null, ['class' => 'form-control']) }}
+                {{ Form::label('nama_kegiatan', 'Nama Kegiatan', ['class' => 'control-label']) }}
+                {{ Form::text('nama_kegiatan', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
-                {{ Form::label('deskripsi_proyek', 'Deskripsi Kegiatan', ['class' => 'control-label']) }}
-                {{ Form::textarea('deskripsi_proyek', null, ['class' => 'form-control']) }}
+                {{ Form::label('deskripsi_kegiatan', 'Deskripsi Kegiatan', ['class' => 'control-label']) }}
+                {{ Form::textarea('deskripsi_kegiatan', null, ['class' => 'form-control']) }}
             </div>
 
             <div class="form-group">
@@ -44,4 +44,4 @@
             {{ Form::close() }}
         </div>
     </div>
-    @endsection()
+    @endsection
