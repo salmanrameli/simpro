@@ -38,11 +38,6 @@ Route::get('kegiatan/{id}/hapus_anggota', [
     'uses' => 'KegiatanController@anggota_proyek'
 ]);
 
-Route::get('kegiatan/{id}/tambah_anggota', [
-    'as' => 'kegiatan.tambah_anggota',
-    'uses' => 'KegiatanController@tambah_anggota'
-]);
-
 Route::get('kegiatan/tandai_selesai/{id}', [
     'as' => 'kegiatan.tandai_selesai',
     'uses' => 'KegiatanController@tandai_selesai'
