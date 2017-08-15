@@ -492,20 +492,6 @@ class KegiatanController extends Controller
 
                 return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
                 break;
-
-            case '4':
-                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_mulai', 'like', '%'.$query.'%')->paginate($paginate);
-
-                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
-                break;
-
-            case '5':
-                $hasil = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->select('kegiatan.*', 'users.name')
-                    ->where('kegiatan.tanggal_ target_selesai', 'like', '%'.$query.'%')->paginate($paginate);
-
-                return view('kegiatan.hasil-cari')->with('results', $hasil->appends(Input::except('page')))->with('query', $query);
-                break;
         }
     }
 
