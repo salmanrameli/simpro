@@ -57,33 +57,41 @@
 
     <table class="table" id="tabel">
         <thead>
-            <tr>
-                <th>Kode</th>
-                <th>Nama Kegiatan</th>
-                <th>Nama Ketua</th>
-                <th>Tanggal Mulai</th>
-                <th>Target Selesai</th>
-                <th>Detail</th>
-            </tr>
+        <tr>
+            <th id="col_kode_kegiatan">ID</th>
+            <th id="col_nama_kegiatan">Nama Kegiatan</th>
+            <th id="col_nama_pemilik">Kepala PIC</th>
+            <th id="col_tanggal_mulai">Tanggal Mulai</th>
+            <th id="col_target_selesai">Target Selesai</th>
+            <th id="col_status">Status</th>
+            <th id="col_tombol_detail">Detail</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-            @foreach($results as $result)
-                <tr>
-                    <td>{{ $result->kode_kegiatan }}</td>
-                    <td>{{ $result->nama_kegiatan }}</td>
-                    <td>{{ $result->name }}</td>
-                    <td>{{ $result->tanggal_mulai }}</td>
-                    <td>{{ $result->tanggal_target_selesai }}</td>
-                    <td><a href="{{ route('kegiatan.show', ['id' => $result->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
-                </tr>
-                @endforeach
+        @foreach($results as $result)
+            <tr class="Entries">
+                <td id="col_kode_kegiatan">{{ $result->kode_kegiatan }}</td>
+                <td id="col_nama_kegiatan">{{ $result->nama_kegiatan }}</td>
+                <td id="col_nama_pemilik">{{ $result->name }}</td>
+                <td id="col_tanggal_mulai">{{ $result->tanggal_mulai }}</td>
+                <td id="target_selesai" style="text-align: center">{{ $result->tanggal_target_selesai }}</td>
+                <td id="col_status"></td>
+                <td id="col_tombol_detail"><a href="{{ route('kegiatan.show', ['id' => $result->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
+                <td class="hidden">{{ $result->tanggal_mulai }}</td>
+                <td class="hidden">{{ $result->id_pemilik_kegiatan }}</td>
+                <td class="hidden">{{ $result->tanggal_realisasi }}</td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
-    @endsection()
+    @endsection
 
 @section('js')
     <script>
         var table = $("#tabel").find("tbody");
+
+        var oneDay = 86400000;
 
         var monthNames = [
             "January", "February", "March",
@@ -95,7 +103,7 @@
         table.find('tr').each(function (i) {
             var $tds = $(this).find('td');
             var tanggal_mulai = $tds.eq(3).text();
-            var tanggal_target = $tds.eq(4).text();
+            var tanggal_realisasi = $tds.eq(9).text();
             var d = new Date(tanggal_mulai);
             var curr_date = d.getDate();
             var curr_month = d.getMonth(); //Months are zero based
@@ -103,13 +111,32 @@
 
             $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
 
-            var tanggal_selesai = $tds.eq(4).text();
-            d = new Date(tanggal_selesai);
+            var target_selesai = $tds.eq(4).text();
+            d = new Date(target_selesai);
             var fin_date = d.getDate();
             var fin_month = d.getMonth(); //Months are zero based
             var fin_year = d.getFullYear();
 
-            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');});
+            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
 
+            var curdate = new Date().toISOString().substring(0, 10);
+
+            var x = 9;
+
+            if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+            {
+                var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
+
+                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+            }
+            else if(tanggal_realisasi !== '0000-00-00')
+            {
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
+            }
+            else {
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+            }
+
+        });
     </script>
     @endsection()
