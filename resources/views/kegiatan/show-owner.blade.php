@@ -103,7 +103,7 @@
                                                 {{ Form::file('dokumen') }}
                                             </div>
 
-                                            <div id="list_pegawai" class="hidden">
+                                            <div id="list_pegawai_subtask" class="hidden">
 
                                             </div>
 
@@ -112,15 +112,15 @@
                                         <div class="col-lg-6">
                                             <div class="form-inline">
                                                 <label for="lastname" class="control-label">Nama</label>
-                                                <select class="form-control" name="pilih_pegawai" id="pilih_pegawai" data-parsley-required="true">
+                                                <select class="form-control" name="pilih_pegawai_subtask" id="pilih_pegawai_subtask" data-parsley-required="true">
                                                     @foreach ($users as $user)
-                                                        <option value="{{ $user->id_pegawai }}" id="nama[]">{{ $user->id_pegawai }} - {{ $user->name }}</option>
+                                                        <option value="{{ $user->id_pegawai }}" id="nama_anggota_subtask[]">{{ $user->id_pegawai }} - {{ $user->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                <button type="button" class="btn btn-primary" onclick="tambah_anggota()">Tambah</button>
-                                                <button type="button" class="btn btn-danger" onclick="hapus()">Kurangi</button><br><br>
+                                                <button type="button" class="btn btn-primary" onclick="tambah_anggota_subtask()">Tambah</button>
+                                                <button type="button" class="btn btn-danger" onclick="hapus_anggota_subtask()">Kurangi</button><br><br>
                                             </div>
-                                            <ol id="list" class="row">
+                                            <ol id="list_anggota_subtask" class="row">
 
                                             </ol>
                                         </div>
@@ -396,6 +396,27 @@
         {
             $('#list').children().last().remove();
             $('#list_pegawai').children().last().remove();
+        }
+
+        function tambah_anggota_subtask()
+        {
+            var listbox = document.getElementById("pilih_pegawai_subtask");
+            var id_pegawai = listbox.options[listbox.selectedIndex].value;
+            var nama_pegawai = listbox.options[listbox.selectedIndex].text;
+            nama_pegawai = nama_pegawai.split("-");
+            var input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('value', id_pegawai);
+            input.setAttribute('name', 'anggota_subtask[]');
+            input.setAttribute('id', 'anggota_subtask[]');
+            $('#list_pegawai_subtask').append(input);
+            $('#list_anggota_subtask').append('<li>' + nama_pegawai[1] + '</li>');
+        }
+
+        function hapus_anggota_subtask()
+        {
+            $('#list_pegawai_subtask').children().last().remove();
+            $('#list_anggota_subtask').children().last().remove();
         }
     </script>
 

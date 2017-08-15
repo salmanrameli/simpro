@@ -41,8 +41,8 @@ class KegiatanSubtaskController extends Controller
      */
     public function store(Request $request)
     {
-        $jumlah = count($request->get('anggota'));
-        $anggotas = $request->get('anggota');
+        $jumlah = count($request->get('anggota_subtask'));
+        $anggotas = $request->get('anggota_subtask');
 
         $dokumen = $request->hasFile('dokumen');
 
@@ -60,7 +60,7 @@ class KegiatanSubtaskController extends Controller
             ]);
         }
 
-        if($jumlah <= 1)
+        if($jumlah == 0)
         {
             $tugas = new Kegiatan_Subtask();
             $tugas->kode_kegiatan = $request->kode_proyek;
