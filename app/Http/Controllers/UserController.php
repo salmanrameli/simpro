@@ -18,7 +18,7 @@ class UserController extends Controller
 
         $role = DB::table('users')->where('id', $user_id)->value('jabatan_id');
 
-        $users = DB::table('users')->orderBy('name')->paginate(20);
+        $users = DB::table('users')->where('deleted_at', null)->orderBy('name')->paginate(20);
 
         if($role == 1)
         {
@@ -197,7 +197,13 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findorFail($id);
+
+        $user->delete();
+
+        Session::flash('message', 'Akun berhasil dihapus');
+
+        return redirect()->action('UserController@home');
     }
 
     public function ubah_password($id)

@@ -31,6 +31,9 @@
                     <td>{{ $user->telepon }}</td>
                 </tr>
             </table>
+            {{ Form::open(['method' => 'DELETE', 'route' => ['user.destroy', $user->id]]) }}
+            {{ Form::submit('Hapus Akun', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Hapus Akun?")']) }}
+            {{ Form::close() }}
         </div>
     </div>
 @endsection
