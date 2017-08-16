@@ -24,6 +24,11 @@ Route::get('/home', 'UserController@index')->name('home');
 
 Route::resource('user', 'UserController');
 
+Route::get('administrator/manajemen_user', [
+    'as' => 'user.manajemen',
+    'uses' => 'UserController@home'
+]);
+
 Route::get('/user/{id}/ubah_password', [
     'as' => 'user.update_password',
     'uses' => 'UserController@ubah_password'
@@ -100,6 +105,11 @@ Route::group(['middleware' => 'checkRole:1'], function () {
     Route::post('user', [
         'as' => 'user.store',
         'uses' => 'UserController@store'
+    ]);
+
+    Route::get('administrator/user/{id}/show', [
+        'as' => 'user.detail',
+        'uses' => 'UserController@user_detail'
     ]);
 });
 

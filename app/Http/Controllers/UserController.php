@@ -12,6 +12,23 @@ use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function home()
+    {
+        $user_id = Auth::id();
+
+        $role = DB::table('users')->where('id', $user_id)->value('jabatan_id');
+
+        $users = DB::table('users')->orderBy('name')->paginate(20);
+
+        if($role == 1)
+        {
+            return view('user.index')
+                ->with('users', $users);
+        }
+
+        return redirect()->back()->with('warning', 'Anda tidak memiliki hak akses');
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -230,5 +247,12 @@ class UserController extends Controller
         $message = "Password gagal diubah";
 
         return redirect()->route('home')->with('warning', $message);
+    }
+
+    public function user_detail($id)
+    {
+        $user = User::findorFail($id);
+
+        return view('user.detail')->with('user', $user);
     }
 }
