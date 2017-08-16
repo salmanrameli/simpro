@@ -6882,6 +6882,29 @@ button.close {
 {
   border-left:solid 3px #75D900;
 }
+.custom-button-user {
+  width: 200px;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-image: url("../img/user-icon-1.png");
+  background-repeat: no-repeat;
+  background-position-y: 50px;
+  background-clip: border-box;
+}
+.custom-button-project {
+  width: 200px;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-image: url("../img/project-icon-1.png");
+  background-repeat: no-repeat;
+  background-position-y: 50px;
+  background-clip: border-box;
+}
+
 /*#col_kode_kegiatan { width: 12.5%; text-align: left}*/
 /*#col_nama_kegiatan { width: 25%; text-align: left}*/
 /*#col_nama_pemilik { width: 15%; text-align: center}*/

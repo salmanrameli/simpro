@@ -5,13 +5,19 @@
 @endsection
 
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">Dashboard – Administrator</div>
-
-        <div class="panel-body">
-            You are logged in!<br><br>
-            <a href="{{ route('user.create') }}" class="btn btn-default btn-block">Register User</a><br>
-            <a href="{{ route('kegiatan.index') }}" class="btn btn-info btn-block">Lihat Kegiatan</a>
+    <div class="row">
+        <div style="text-align: center">
+            <img src="{{ asset('bootstrap/img/bri-sat.jpg') }}" style="display: inline-block; " href="{{ route('home') }}">
+            <div class="title" style="font-size: 32px">
+                Portal Divisi Satelit Jaringan Komunikasi
+                <br><br>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <a href="{{ route('user.manajemen') }}" class="btn btn-lg btn-default custom-button-user pull-right">Manajemen User</a><br>
+        </div>
+        <div class="col-lg-6">
+            <a href="{{ route('kegiatan.index') }}" class="btn btn-lg btn-default custom-button-project">Kegiatan</a>
         </div>
     </div>
 
