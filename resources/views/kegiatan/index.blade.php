@@ -9,8 +9,10 @@
     <div id="id_user" class="hidden">{{ \Illuminate\Support\Facades\Auth::id() }}</div>
 
     <div class="row">
-        <a href="{{ route('kegiatan.create') }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Aktivitas Baru</a>
-        <h1>Kegiatan</h1><hr>
+       <div class="page-header">
+           <a href="{{ route('kegiatan.create') }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> Aktivitas Baru</a>
+           <h2>Kegiatan</h2>
+       </div>
 
         <div class="col-lg-6">
             <form action="{{ url('cari') }}" method="GET">
@@ -40,7 +42,7 @@
                 <label for="tanggal_2" class="control-label">Tanggal 2</label>
                 <input type="date" class="form-control" name="tgl_selesai" placeholder="YYYY-MM-DD"><br>
             </div>
-            <label for="cari" class="control-label" style="padding-left: 18px">Cari di Tanggal: </label>
+            <label for="cari" class="control-label" style="padding-left: 18px">Cari di: </label>
             <select id="kategori" name="kategori">
                 <option value="0">Tanggal Mulai s.d. Target Selesai</option>
                 <option value="1">Tanggal Mulai</option>
@@ -113,7 +115,15 @@
             var curr_month = d.getMonth(); //Months are zero based
             var curr_year = d.getFullYear();
 
-            $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+            if(tanggal_mulai !== '0000-00-00')
+            {
+                $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+            }
+            else
+            {
+                $tds.eq(3).html('<td> 0000-00-00 <td>');
+            }
+
 
             var target_selesai = $tds.eq(4).text();
             d = new Date(target_selesai);
@@ -121,24 +131,39 @@
             var fin_month = d.getMonth(); //Months are zero based
             var fin_year = d.getFullYear();
 
-            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+            if(target_selesai !== '0000-00-00')
+            {
+                $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+            }
+            else
+            {
+                $tds.eq(4).html('<td> 0000-00-00 <td>');
+            }
+
 
             var curdate = new Date().toISOString().substring(0, 10);
 
             var x = 9;
 
-            if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+            if(tanggal_mulai !== '0000-00-00' && target_selesai !== '0000-00-00')
             {
-                var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
+                if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+                {
+                    var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
 
-                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+                    $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+                }
+                else if(tanggal_realisasi !== '0000-00-00')
+                {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
+                }
+                else {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+                }
             }
-            else if(tanggal_realisasi !== '0000-00-00')
+            else
             {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
-            }
-            else {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px;" width="100px"> None</td>');
             }
 
         });
@@ -176,6 +201,7 @@
         ];
 
         var oneDay = 86400000;
+
         function label()
         {
             table.find('tr').each(function (i) {

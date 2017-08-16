@@ -30,11 +30,19 @@
                     </tr>
                     <tr>
                         <th>Tanggal Mulai</th>
-                        <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_mulai)) }}</td>
+                        @if($deskripsi->tanggal_mulai != '0000-00-00')
+                            <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_mulai)) }}</td>
+                        @else
+                            <td>0000-00-00</td>
+                        @endif
                     </tr>
                     <tr>
                         <th>Target Selesai</th>
-                        <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_target_selesai)) }}</td>
+                        @if($deskripsi->tanggal_target_selesai != '0000-00-00')
+                            <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_target_selesai)) }}</td>
+                        @else
+                            <td>0000-00-00</td>
+                        @endif
                     </tr>
                     @if($deskripsi->tanggal_realisasi != '0000-00-00')
                         <tr>

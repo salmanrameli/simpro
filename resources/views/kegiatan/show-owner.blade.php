@@ -30,11 +30,19 @@
                         </tr>
                         <tr>
                             <th>Tanggal Mulai</th>
-                            <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_mulai)) }}</td>
+                            @if($deskripsi->tanggal_mulai != '0000-00-00')
+                                <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_mulai)) }}</td>
+                                @else
+                                <td>0000-00-00</td>
+                            @endif
                         </tr>
                         <tr>
                             <th>Target Selesai</th>
-                            <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_target_selesai)) }}</td>
+                            @if($deskripsi->tanggal_target_selesai != '0000-00-00')
+                                <td>{{ date('d F, Y', strtotime($deskripsi->tanggal_target_selesai)) }}</td>
+                            @else
+                                <td>0000-00-00</td>
+                            @endif
                         </tr>
                     @if($deskripsi->tanggal_realisasi != '0000-00-00')
                         <tr>
@@ -359,7 +367,7 @@
                                         <td>{{ $dokumen->tipe }}</td>
                                         <td>{{ $dokumen->name }}</td>
                                         <td>
-                                            <a onclick="return confirm('Hapus dokumen dari proyek?')" href="{{ route('dokumen.destroy', [$dokumen->id, $kode]) }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
+                                            <a onclick="return confirm('Hapus dokumen dari kegiatan?')" href="{{ route('dokumen.destroy', [$dokumen->id, $kode]) }}" class="btn btn-danger pull-right"><span class="glyphicon glyphicon-trash"></span></a>
                                             <a href="{{ route('dokumen.download', [$dokumen->id, $kode]) }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-save-file"></span> Download</a>
                                         </td>
                                     </tr>
