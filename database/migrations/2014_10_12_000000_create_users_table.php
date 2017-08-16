@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('jabatan_id');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
