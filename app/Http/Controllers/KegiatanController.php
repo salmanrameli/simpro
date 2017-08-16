@@ -136,9 +136,24 @@ class KegiatanController extends Controller
             $proyek->nama_kegiatan = $request->nama_proyek;
             $proyek->id_pemilik_kegiatan= Auth::id();
             $proyek->deskripsi_kegiatan = $request->deskripsi_proyek;
-            $proyek->tanggal_mulai = $request->tanggal_mulai;
-            $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
-            $proyek->tanggal_realisasi = '0';
+            if($request->tanggal_mulai = null)
+            {
+                $proyek->tanggal_mulai = '0000-00-00';
+            }
+            if($request->tanggal_mulai != null)
+            {
+                $proyek->tanggal_mulai = $request->tanggal_mulai;
+            }
+            if($request->tanggal_target_selesai = null)
+            {
+                $proyek->tanggal_target_selesai = '0000-00-00';
+            }
+            if($request->tanggal_target_selesai != null)
+            {
+                $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
+            }
+
+            $proyek->tanggal_realisasi = '0000-00-00';
             $proyek->save();
 
             /*
