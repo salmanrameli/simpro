@@ -185,86 +185,19 @@ class UserSeeder extends Seeder
         $pegawai->save();
 //        $pegawai->jabatan()->attach($jabatan_pegawai);
 
-//        DB::table('users')->insert([
-//            'id' => '1',
-//            'name' => 'user1',
-//            'email' => 'user1@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat1',
-//            'telepon' => '11111',
-//            'jabatan' => '1'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '2',
-//            'name' => 'user2',
-//            'email' => 'user2@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat2',
-//            'telepon' => '22222',
-//            'jabatan' => '2'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '3',
-//            'name' => 'user3',
-//            'email' => 'user3@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat3',
-//            'telepon' => '33333',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '4',
-//            'name' => 'user4',
-//            'email' => 'user4@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat4',
-//            'telepon' => '44444',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '5',
-//            'name' => 'user5',
-//            'email' => 'user5@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat5',
-//            'telepon' => '55555',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '6',
-//            'name' => 'user6',
-//            'email' => 'user6@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat6',
-//            'telepon' => '66666',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '7',
-//            'name' => 'user7',
-//            'email' => 'user7@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat1',
-//            'telepon' => '77777',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '8',
-//            'name' => 'user8',
-//            'email' => 'user8@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat8',
-//            'telepon' => '88888',
-//            'jabatan' => '3'
-//        ]);
-//        DB::table('users')->insert([
-//            'id' => '9',
-//            'name' => 'user9',
-//            'email' => 'user9@user.com',
-//            'password' => bcrypt('user'),
-//            'alamat' => 'alamat9',
-//            'telepon' => '99999',
-//            'jabatan' => '3'
-//        ]);
+        for($i=16; $i<=100; $i++)
+        {
+            $pegawai = new User();
+            $pegawai->id = $i;
+            $pegawai->name = $faker->name;
+            $pegawai->email = $faker->companyEmail;
+            $pegawai->password = bcrypt('user');
+            $pegawai->alamat = $faker->address;
+            $pegawai->telepon = $faker->phoneNumber;
+            $pegawai->jabatan_id = '3';
+            $pegawai->save();
+        }
+
     }
+
 }
