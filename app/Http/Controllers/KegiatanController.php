@@ -64,15 +64,16 @@ class KegiatanController extends Controller
      */
     public function store(Request $request)
     {
-        $names = count($request->get('nama'));
+        $jumlah = count($request->get('anggota'));
+        $names = $request->get('anggota');
 
         $now = Carbon::now();
 
-        $terakhir = DB::table('kegiatan')->latest('tanggal_mulai')->value('tanggal_mulai');
-        $counter = DB::table('kegiatan')->latest('tanggal_mulai')->value('kode_kegiatan');
+        $terakhir = DB::table('kegiatan')->latest('created_at')->value('created_at');
+        $counter = DB::table('kegiatan')->latest('created_at')->value('kode_kegiatan');
         $terakhir = explode('-', $terakhir);
         $counter = explode('-', $counter);
-        $antrian = intval($counter[3]);
+        $antrian = intval($counter[1]);
 
         $parse = Carbon::parse($now);
 
@@ -105,7 +106,7 @@ class KegiatanController extends Controller
 
         $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $antrian . '-' . $nama;
 
-//        Session::flash('message', $kode_kegiatan);
+//        Session::flash('message', $a);
 //
 //        return redirect()->back();
 
@@ -136,21 +137,27 @@ class KegiatanController extends Controller
             $proyek->nama_kegiatan = $request->nama_proyek;
             $proyek->id_pemilik_kegiatan= Auth::id();
             $proyek->deskripsi_kegiatan = $request->deskripsi_proyek;
-            if($request->tanggal_mulai = null)
+
+            $tanggal_mulai = $request->tanggal_mulai;
+
+            if($tanggal_mulai == null)
             {
                 $proyek->tanggal_mulai = '0000-00-00';
             }
-            if($request->tanggal_mulai != null)
+            else
             {
-                $proyek->tanggal_mulai = $request->tanggal_mulai;
+                $proyek->tanggal_mulai = $tanggal_mulai;
             }
-            if($request->tanggal_target_selesai = null)
+
+            $target_selesai = $request->tanggal_target_selesai;
+
+            if($target_selesai == null)
             {
                 $proyek->tanggal_target_selesai = '0000-00-00';
             }
-            if($request->tanggal_target_selesai != null)
+            else
             {
-                $proyek->tanggal_target_selesai = $request->tanggal_target_selesai;
+                $proyek->tanggal_target_selesai = $target_selesai;
             }
 
             $proyek->tanggal_realisasi = '0000-00-00';
@@ -179,23 +186,26 @@ class KegiatanController extends Controller
              * Mendaftarkan kode, nama, dan anggota proyek ke tabel proyek_anggota.
              * Looping dilakukan untuk memasukkan data setiap anggota proyek yang dipilih ke tabel proyek_anggota.
              */
-            for($i=0; $i<$names; $i++)
+            if($jumlah > 0)
             {
-                $anggota_proyek = new Kegiatan_Anggota();
+                foreach ($names as $name)
+                {
+                    $anggota_proyek = new Kegiatan_Anggota();
 
-                $anggota_proyek->kode_kegiatan = $kode_kegiatan;
-                $anggota_proyek->nama_kegiatan = $request->nama_proyek;
-                $anggota_proyek->id_pegawai = $request->nama[$i];
-                $anggota_proyek->save();
+                    $anggota_proyek->kode_kegiatan = $kode_kegiatan;
+                    $anggota_proyek->nama_kegiatan = $request->nama_proyek;
+                    $anggota_proyek->id_pegawai = $name;
+                    $anggota_proyek->save();
 
-                /*
-                 * Mencatat kegiatan yang dilakukan ke tabel log.
-                 */
-                $log = new Log();
+                    /*
+                     * Mencatat kegiatan yang dilakukan ke tabel log.
+                     */
+                    $log = new Log();
 
-                $log->id_pegawai = Auth::id();
-                $log->data = "menambah pegawai " . $request->nama[$i] . " ke kegiatan " . $kode_kegiatan;
-                $log->save();
+                    $log->id_pegawai = Auth::id();
+                    $log->data = "menambah pegawai " . $name . " ke kegiatan " . $kode_kegiatan;
+                    $log->save();
+                }
             }
 
             Session::flash('message', 'Kegiatan berhasil didaftarkan');
