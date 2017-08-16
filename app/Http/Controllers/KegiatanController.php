@@ -34,6 +34,7 @@ class KegiatanController extends Controller
         $kegiatan = DB::table('kegiatan')
             ->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')
             ->select('kegiatan.*', 'users.name')
+            ->where('deleted_at', null)
             ->orderBy('kegiatan.created_at', 'desc')
             ->paginate($paginate);
 
@@ -51,7 +52,7 @@ class KegiatanController extends Controller
         /*
          * Hanya menampilkan daftar pegawai selain akun yang sedang login sekarang.
          */
-        $user = DB::table('users')->where('id', '<>', Auth::id())->orderBy('name', 'asc')->get();
+        $user = DB::table('users')->where('id', '<>', Auth::id())->where('deleted_at', null)->orderBy('name', 'asc')->get();
 
         return view('kegiatan.create')->with('users', $user);
     }
@@ -109,7 +110,6 @@ class KegiatanController extends Controller
 //        Session::flash('message', $a);
 //
 //        return redirect()->back();
-
 
         $this->validate($request, [
             'nama_proyek' => 'required',
@@ -256,7 +256,7 @@ class KegiatanController extends Controller
 
         $anggota_sekarang = Kegiatan_Anggota::where('kode_kegiatan', '=', $id)->pluck('id_pegawai')->toArray();
 
-        $pegawai = DB::table('users')->whereNotIn('id', $anggota_sekarang)->orderBy('name', 'asc')->get();
+        $pegawai = DB::table('users')->where('deleted_at', null)->whereNotIn('id', $anggota_sekarang)->orderBy('name', 'asc')->get();
 
         $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->groupBy('nama_subtask')->get();
 
