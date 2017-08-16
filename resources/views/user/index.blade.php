@@ -7,7 +7,7 @@
 @section('content')
     <div class="col-lg-12">
         <div class="page-header">
-            <a class="btn btn-default pull-right">User Baru</a>
+            <a href="{{ route('user.create') }}" class="btn btn-default pull-right">User Baru</a>
             <h2>Manajemen User</h2>
         </div>
         <div class="scroll">
@@ -38,20 +38,4 @@
             {{ $users->links() }}
         </div>
     </div>
-    @endsection
-
-@section('js')
-    {{--<script>--}}
-        {{--$(function() {--}}
-            {{--$('.scroll').jscroll({--}}
-                {{--autoTrigger: true,--}}
-                {{--nextSelector: '.pagination li.active + li a',--}}
-                {{--contentSelector: 'div.scroll',--}}
-                {{--loadingFunction: alert('yo'),--}}
-                {{--callback: function() {--}}
-                    {{--$('ul.pagination:visible:first').hide();--}}
-                {{--}--}}
-            {{--});--}}
-        {{--});--}}
-    {{--</script>--}}
     @endsection
