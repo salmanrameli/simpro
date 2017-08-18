@@ -16,7 +16,7 @@
         {{ csrf_field() }}
 
         <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
-            <label for="id" class="control-label">ID</label>
+            <label for="id" class="control-label">Personnel Number</label>
 
             <input id="id" type="text" class="form-control" name="id" value="{{ old('id') }}" required autofocus>
 

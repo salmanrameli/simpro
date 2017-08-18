@@ -162,15 +162,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $baru->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($baru->id == $anggota->id_subtask)
-                                                    <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                    @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($baru->id == $anggota->id_subtask)--}}
+                                                    {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                    {{--@endforeach--}}
+                                            {{--</ol>--}}
                                             <div class="row" style="margin-left: 0; margin-top:10px;">
                                                 <a href="{{ route('subtask.kerjakan', $baru->id) }}" class="pull-right" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right">&nbsp;</span></a>
                                                 <a href="{{ route('subtask.destroy', $baru->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp</span></a>
@@ -193,15 +193,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $ongoing->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($ongoing->id == $anggota->id_subtask)
-                                                        <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($ongoing->id == $anggota->id_subtask)--}}
+                                                        {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--</ol>--}}
                                             <div class="row" style="margin-left: 0; margin-top:10px;">
                                                 <a href="{{ route('subtask.pindah_kanan', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Request selesai"><span class="glyphicon glyphicon-ok">&nbsp;</span></a>
                                                 <a href="{{ route('subtask.pindah_kiri', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Kembalikan ke To-do" onclick="return confirm('Kembalikan ke To Do?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
@@ -225,15 +225,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $selesai->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($selesai->id == $anggota->id_subtask)
-                                                        <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($selesai->id == $anggota->id_subtask)--}}
+                                                        {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--</ol>--}}
                                             <div class="row" style="margin-left: 0; margin-top:10px;">
                                                 <a href="{{ route('subtask.pindah_kiri', $selesai->id) }}" class="pull-right" data-toggle="tooltip" title="Kembalikan ke In-progress" onclick="return confirm('Kembalikan ke in-progress?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
                                                 <a href="{{ route('subtask.destroy', $selesai->id) }}" class="pull-left" data-toggle="tooltip" title="Hapus" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-trash">&nbsp;</span></a>
@@ -258,15 +258,15 @@
                                 <tr>
                                     <td>
                                         <b>{{ $request->nama_subtask }}</b>
-                                        <hr>
-                                        Anggota:
-                                        <ol>
-                                            @foreach($subtask_anggotas as $anggota)
-                                                @if($request->id == $anggota->id_subtask)
-                                                    <li>{{ $anggota->name }}</li>
-                                                @endif
-                                            @endforeach
-                                        </ol>
+                                        {{--<hr>--}}
+                                        {{--Anggota:--}}
+                                        {{--<ol>--}}
+                                            {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                {{--@if($request->id == $anggota->id_subtask)--}}
+                                                    {{--<li>{{ $anggota->name }}</li>--}}
+                                                {{--@endif--}}
+                                            {{--@endforeach--}}
+                                        {{--</ol>--}}
                                         <div class="row" style="margin-left: 0; margin-top:10px;">
                                             <a href="{{ route('subtask.pindah_kanan', $request->id) }}" class="pull-right" data-toggle="tooltip" title="Terima selesai"><span class="glyphicon glyphicon-ok">&nbsp;</span></a>
                                             <a href="{{ route('subtask.pindah_kiri', $request->id) }}" class="pull-right" data-toggle="tooltip" title="Tolak" onclick="return confirm('Tolak & kembalikan ke in-progress?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
@@ -323,7 +323,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Personnel Number</th>
                                     <th>Nama</th>
                                     <th>E-Mail</th>
                                     <th>Telepon</th>

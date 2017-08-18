@@ -90,15 +90,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $baru->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($baru->id == $anggota->id_subtask)
-                                                        <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($baru->id == $anggota->id_subtask)--}}
+                                                        {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--</ol>--}}
                                             <div class="row" style="margin-left: 0; margin-top:10px;">
                                                 <a href="{{ route('subtask.kerjakan', $baru->id) }}" class="pull-right" data-toggle="tooltip" title="Kerjakan"><span class="glyphicon glyphicon-arrow-right">&nbsp;</span></a>
                                             </div>
@@ -120,15 +120,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $ongoing->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($ongoing->id == $anggota->id_subtask)
-                                                        <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($ongoing->id == $anggota->id_subtask)--}}
+                                                        {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--</ol>--}}
                                             <div class="row" style="margin-left: 0; margin-top:10px;">
                                                 <a href="{{ route('subtask.pindah_kanan', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Request selesai"><span class="glyphicon glyphicon-ok">&nbsp;</span></a>
                                                 <a href="{{ route('subtask.pindah_kiri', $ongoing->id) }}" class="pull-right" data-toggle="tooltip" title="Kembalikan ke To-do" onclick="return confirm('Hapus subtask?')"><span class="glyphicon glyphicon-ban-circle">&nbsp;</span></a>
@@ -151,15 +151,15 @@
                                     <tr>
                                         <td>
                                             <b>{{ $selesai->nama_subtask }}</b>
-                                            <hr>
-                                            Anggota:
-                                            <ol>
-                                                @foreach($subtask_anggotas as $anggota)
-                                                    @if($selesai->id == $anggota->id_subtask)
-                                                        <li>{{ $anggota->name }}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ol>
+                                            {{--<hr>--}}
+                                            {{--Anggota:--}}
+                                            {{--<ol>--}}
+                                                {{--@foreach($subtask_anggotas as $anggota)--}}
+                                                    {{--@if($selesai->id == $anggota->id_subtask)--}}
+                                                        {{--<li>{{ $anggota->name }}</li>--}}
+                                                    {{--@endif--}}
+                                                {{--@endforeach--}}
+                                            {{--</ol>--}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -180,15 +180,15 @@
                             <tr>
                                 <td>
                                     <b>{{ $request->nama_subtask }}</b>
-                                    <hr>
-                                    Anggota:
-                                    <ol>
-                                        @foreach($subtask_anggotas as $anggota)
-                                            @if($request->id == $anggota->id_subtask)
-                                                <li>{{ $anggota->name }}</li>
-                                            @endif
-                                        @endforeach
-                                    </ol>
+                                    {{--<hr>--}}
+                                    {{--Anggota:--}}
+                                    {{--<ol>--}}
+                                        {{--@foreach($subtask_anggotas as $anggota)--}}
+                                            {{--@if($request->id == $anggota->id_subtask)--}}
+                                                {{--<li>{{ $anggota->name }}</li>--}}
+                                            {{--@endif--}}
+                                        {{--@endforeach--}}
+                                    {{--</ol>--}}
                                 </td>
                             </tr>
                         @endforeach
@@ -203,7 +203,7 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Personnel Number</th>
                                 <th>Nama</th>
                                 <th>E-Mail</th>
                                 <th>Telepon</th>
@@ -241,9 +241,7 @@
                         <label for="nama">Nama Subtask</label>
                         <select class="form-control" name="nama" id="nama" data-parsley-required="true">
                             @foreach ($subtasks as $subtask)
-                                {
                                 <option value="{{ $subtask->id }}">{{ $subtask->nama_subtask }}</option>
-                                }
                             @endforeach
                         </select>
 

@@ -22,7 +22,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Personnel Number</th>
                     <th>Nama</th>
                     <th>E-Mail</th>
                     <th>Alamat</th>

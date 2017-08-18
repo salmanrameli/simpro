@@ -114,7 +114,15 @@
             var curr_month = d.getMonth(); //Months are zero based
             var curr_year = d.getFullYear();
 
-            $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+            if(tanggal_mulai !== '0000-00-00')
+            {
+                $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
+            }
+            else
+            {
+                $tds.eq(3).html('<td style="text-align: center"> <i>Undefined</i> <td>');
+            }
+
 
             var target_selesai = $tds.eq(4).text();
             d = new Date(target_selesai);
@@ -122,24 +130,58 @@
             var fin_month = d.getMonth(); //Months are zero based
             var fin_year = d.getFullYear();
 
-            $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+            if(target_selesai !== '0000-00-00')
+            {
+                $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
+            }
+            else
+            {
+                $tds.eq(4).html('<td style="text-align: center"> <i>Undefined</i> <td>');
+            }
+
 
             var curdate = new Date().toISOString().substring(0, 10);
 
             var x = 9;
 
-            if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+            if(tanggal_mulai !== '0000-00-00' && target_selesai !== '0000-00-00')
             {
-                var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
+                if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+                {
+                    var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
 
-                $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+                    if(selisih >= 30)
+                    {
+                        selisih = Math.round(selisih/28);
+
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Bulan)</td>');
+
+                    }
+                    else if(selisih / 7 >= 1)
+                    {
+                        selisih = Math.round(selisih / 7);
+
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Minggu)</td>');
+
+                    }
+                    else
+                    {
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+
+                    }
+
+                }
+                else if(tanggal_realisasi !== '0000-00-00')
+                {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
+                }
+                else {
+                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+                }
             }
-            else if(tanggal_realisasi !== '0000-00-00')
+            else
             {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
-            }
-            else {
-                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
+                $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px;" width="100px"> None</td>');
             }
 
         });

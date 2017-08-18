@@ -18,7 +18,7 @@
         <div class="panel-body">
             <table class="table">
                 <tr>
-                    <th>ID</th>
+                    <th>Personnel Number</th>
                     <td>{{ $user->id }}</td>
                 </tr>
                 <tr>

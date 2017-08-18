@@ -131,7 +131,7 @@
             }
             else
             {
-                $tds.eq(3).html('<td> 0000-00-00 <td>');
+                $tds.eq(3).html('<td style="align-items: center"> <i>Undefined</i> <td>');
             }
 
 
@@ -147,7 +147,7 @@
             }
             else
             {
-                $tds.eq(4).html('<td> 0000-00-00 <td>');
+                $tds.eq(4).html('<td style="align-items: center"> <i>Undefined</i> <td>');
             }
 
 
