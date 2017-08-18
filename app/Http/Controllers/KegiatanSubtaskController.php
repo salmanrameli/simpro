@@ -91,17 +91,18 @@ class KegiatanSubtaskController extends Controller
         }
         else
         {
-            $tugas = new Kegiatan_Subtask();
-            $tugas->kode_kegiatan = $request->kode_proyek;
-            $tugas->id_pembuat = Auth::id();
-            $tugas->nama_subtask = $request->nama_subtask;
-            $tugas->status = '0';
-            $tugas->save();
+            $subtask = new Kegiatan_Subtask();
+            $subtask->kode_kegiatan = $request->kode_proyek;
+            $subtask->id_pembuat = Auth::id();
+            $subtask->nama_subtask = $request->nama_subtask;
+            $subtask->status = '0';
+            $subtask->save();
 
             foreach ($anggotas as $anggota)
             {
                 $tugas = new Subtask_Anggota();
                 $tugas->kode_kegiatan = $request->kode_proyek;
+                $tugas->id_subtask = $subtask->id;
                 $tugas->id_pegawai = $anggota;
                 $tugas->save();
             }
