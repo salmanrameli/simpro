@@ -16,6 +16,7 @@ class CreateSubtaskAnggotaTable extends Migration
         Schema::create('subtask_anggota', function (Blueprint $table) {
             $table->increments('id');
             $table->string('kode_kegiatan');
+            $table->string('id_subtask');
             $table->string('id_pegawai');
             $table->timestamps();
         });
