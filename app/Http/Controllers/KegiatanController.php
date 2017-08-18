@@ -26,7 +26,7 @@ class KegiatanController extends Controller
      */
     public function index()
     {
-        $paginate = 10;
+        $paginate = 20;
         /*
          * Menampilkan semua proyek jika user termasuk salah satu anggotanya.
          * Diurutkan berdasarkan kolom created_at secara ascending.
@@ -234,7 +234,7 @@ class KegiatanController extends Controller
          * Pemilik proyek dapat melihat semua informasi yang dimasukkan oleh anggota proyek.
          * Anggota proyek hanya dapat melihat informasi yang dimasukkan oleh sendiri.
          */
-        $paginate = 10;
+        $paginate = 20;
 
         $uid = Auth::id();
 
@@ -260,6 +260,8 @@ class KegiatanController extends Controller
 
         $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->groupBy('nama_subtask')->get();
 
+        $anggota_subtask = DB::table('subtask_anggota')->join('users', 'subtask_anggota.id_pegawai', '=', 'users.id')->where('kode_kegiatan', $id)->get();
+
         if($pemilik_proyek == $uid)
         {
             $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1']])->latest('updated_at')->get();
@@ -279,7 +281,8 @@ class KegiatanController extends Controller
                 ->with('dokumens', $dokumen)
                 ->with('users', $user)
                 ->with('subtasks', $kegiatan)
-                ->with('pegawais', $pegawai);
+                ->with('pegawais', $pegawai)
+                ->with('subtask_anggotas', $anggota_subtask);
         }
         else
         {
@@ -299,7 +302,9 @@ class KegiatanController extends Controller
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen)
                 ->with('users', $user)
-                ->with('subtasks', $kegiatan);
+                ->with('subtasks', $kegiatan)
+                ->with('pegawais', $pegawai)
+                ->with('subtask_anggotas', $anggota_subtask);
         }
     }
 
