@@ -41,7 +41,7 @@
             <div class="collapse navbar-collapse navbar-brand-text" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    &nbsp;
+                    @yield('navbar')
                 </ul>
 
                 <!-- Right Side Of Navbar -->

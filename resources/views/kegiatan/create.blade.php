@@ -4,11 +4,17 @@
     Kegiatan Baru
     @endsection
 
+@section('navbar')
+    @if(\Illuminate\Support\Facades\Auth::user()->jabatan_id == '1')
+        <li><a href="{{ route('user.manajemen') }}">Manajemen User</a></li>
+    @endif
+    <li class="active"><a href="{{ route('kegiatan.index') }}">Kegiatan</a></li>
+@endsection
+
 @section('content')
     <div class="page-header">
         <h1>Buat Kegiatan Baru</h1>
     </div>
-    {{--<button class="btn btn-default pull-right" id="tombol">Tambah Anggota Kegiatan</button><br>--}}
 
     {{ Form::open(['route' => 'kegiatan.store']) }}
     <div class="col-lg-6">

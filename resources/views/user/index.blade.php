@@ -4,12 +4,20 @@
     Manajemen User
     @endsection
 
+@section('navbar')
+    @if(\Illuminate\Support\Facades\Auth::user()->jabatan_id == '1')
+        <li><a href="{{ route('user.manajemen') }}">Manajemen User</a></li>
+    @endif
+    <li><a href="{{ route('kegiatan.index') }}">Kegiatan</a></li>
+@endsection
+
 @section('content')
     <div class="col-lg-12">
         <div class="page-header">
             <a href="{{ route('user.create') }}" class="btn btn-default pull-right">User Baru</a>
             <h2>Manajemen User</h2>
         </div>
+        {{ $users->links() }}
         <div class="scroll">
             <table class="table table-striped">
                 <thead>
@@ -35,7 +43,6 @@
                 @endforeach
                 </tbody>
             </table>
-            {{ $users->links() }}
         </div>
     </div>
     @endsection

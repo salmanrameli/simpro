@@ -4,6 +4,13 @@
     Ubah Kegiatan
     @endsection()
 
+@section('navbar')
+    @if(\Illuminate\Support\Facades\Auth::user()->jabatan_id == '1')
+        <li><a href="{{ route('user.manajemen') }}">Manajemen User</a></li>
+    @endif
+    <li class="active"><a href="{{ route('kegiatan.index') }}">Kegiatan</a></li>
+@endsection
+
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">Ubah Proyek</div>

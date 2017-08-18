@@ -4,6 +4,13 @@
     Hasil Pencarian
     @endsection
 
+@section('navbar')
+    @if(\Illuminate\Support\Facades\Auth::user()->jabatan_id == '1')
+        <li><a href="{{ route('user.manajemen') }}">Manajemen User</a></li>
+    @endif
+    <li class="active"><a href="{{ route('kegiatan.index') }}">Kegiatan</a></li>
+@endsection
+
 @section('content')
     <div class="page-header">
         <h2>Hasil pencarian dengan query: {{ $query }}</h2>
