@@ -102,6 +102,9 @@
 
 @section('js')
     <script>
+        /*
+        Javascript untuk mengatur status proyek – on-track atau terlambat – dan memberikan warna background yang sesuai
+         */
         var table = $("#tabel").find("tbody");
 
         var oneDay = 86400000;
@@ -158,7 +161,26 @@
                 {
                     var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
 
-                    $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+                    if(selisih >= 30)
+                    {
+                        selisih = Math.round(selisih/28);
+
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Bulan)</td>');
+
+                    }
+                    else if(selisih / 7 >= 1)
+                    {
+                        selisih = Math.round(selisih / 7);
+
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Minggu)</td>');
+
+                    }
+                    else
+                    {
+                        $(this).find('td').eq(x).html('<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat (' + selisih + ' Hari)</td>');
+
+                    }
+
                 }
                 else if(tanggal_realisasi !== '0000-00-00')
                 {
@@ -180,81 +202,6 @@
 
             }
         });
-    </script>
-    <script>
-//        $(function() {
-//            $('.scroll').jscroll({
-//                autoTrigger: true,
-//                nextSelector: '.pagination li.active + li a',
-//                contentSelector: 'div.scroll',
-//                callback: function() {
-//                    $('ul.pagination:visible:first').hide();
-//                }
-//            });
-//        });
-    </script>
-
-    <script>
-        /*
-        Javascript untuk mengatur status proyek – on-track atau terlambat – dan memberikan warna background yang sesuai
-         */
-        var table = $("#tabel").find("tbody");
-
-        var monthNames = [
-            "January", "February", "March",
-            "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"
-        ];
-
-        var oneDay = 86400000;
-
-        function label()
-        {
-            table.find('tr').each(function (i) {
-                var $tds = $(this).find('td');
-                var tanggal_mulai = $tds.eq(3).text();
-                var tanggal_target = $tds.eq(9).text();
-                var d = new Date(tanggal_mulai);
-                var curr_date = d.getDate();
-                var curr_month = d.getMonth(); //Months are zero based
-                var curr_year = d.getFullYear();
-
-                $tds.eq(3).html('<td>' + curr_date + ' ' + monthNames[curr_month] + ' ' + curr_year + '<td>');
-
-                var tanggal_selesai = $tds.eq(4).text();
-                d = new Date(tanggal_selesai);
-                var fin_date = d.getDate();
-                var fin_month = d.getMonth(); //Months are zero based
-                var fin_year = d.getFullYear();
-
-                $tds.eq(4).html('<td>' + fin_date + ' ' + monthNames[fin_month] + ' ' + fin_year + '<td>');
-
-                var curdate = new Date().toISOString().substring(0, 10);
-
-                var x = 9;
-
-                if((curdate > tanggal_selesai) && (tanggal_target === '0000-00-00'))
-                {
-                    var selisih = Math.round(Math.abs((curdate - tanggal_target)/(oneDay)));
-
-                    var str1 = '<td style="text-align:center; padding: 6px; background-color: red; color:white;" width="100px"> Terlambat ';
-                    var str2 = selisih.concat(' </td>');
-                    var str3 = str1.concat(str2);
-
-
-                    $(this).find('td').eq(x).html('aaaa');
-                }
-                else if(tanggal_target !== '0000-00-00')
-                {
-                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
-                }
-                else {
-                    $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #ffcc00; color:black;" width="100px"> On Progress</td>');
-                }
-
-            });
-        }
     </script>
 
     <script>
