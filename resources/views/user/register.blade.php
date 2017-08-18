@@ -67,10 +67,10 @@
             {{ Form::label('jabatan', 'Jabatan', ['class' => 'control-label']) }}<br>
             {{ Form::radio('jabatan', '1') }}
             {{ Form::label('administrator', ' Administrator', ['class' => 'control-label']) }}<br>
-            {{ Form::radio('jabatan', '2') }}
-            {{ Form::label('kepala divisi', ' Kepala Divisi', ['class' => 'control-label']) }}<br>
+            {{--{{ Form::radio('jabatan', '2') }}--}}
+            {{--{{ Form::label('kepala divisi', ' Kepala Divisi', ['class' => 'control-label']) }}<br>--}}
             {{ Form::radio('jabatan', '3') }}
-            {{ Form::label('pegawai', ' Pegawai', ['class' => 'control-label']) }}
+            {{ Form::label('pegawai', ' Non-Administrator', ['class' => 'control-label']) }}
         </div>
 
         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
