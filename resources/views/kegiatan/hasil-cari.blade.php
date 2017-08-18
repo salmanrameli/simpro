@@ -29,8 +29,6 @@
                         <option value="1">ID Kegiatan</option>
                         <option value="2">Nama Kegiatan</option>
                         <option value="3">Kepala PIC</option>
-                        <option value="4">Tanggal Mulai</option>
-                        <option value="5">Target Selesai</option>
                     </select>
                     <button type="submit" class="btn btn-default pull-right">Cari</button>
                 </div>
