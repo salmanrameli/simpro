@@ -40,7 +40,7 @@ class DokumenController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'kode_kegiatan' => 'required',
+            'kode_proyek' => 'required',
             'nama_dokumen' => 'required',
             'dokumen' => 'required'
         ]);
@@ -54,7 +54,7 @@ class DokumenController extends Controller
         $file->move($path, $filename);
 
         $dokumen->kode_kegiatan = $request->kode_proyek;
-        $dokumen->id_subtask = DB::table('kegiatan_subtask')->where('nama_subtask', $request->nama_tugas)->value('id');
+        $dokumen->id_subtask = DB::table('kegiatan_subtask')->where('id', $request->nama)->value('id');
         $dokumen->id_pegawai = Auth::id();
         $dokumen->judul = $request->nama_dokumen;
         $dokumen->dokumen = $filename;
