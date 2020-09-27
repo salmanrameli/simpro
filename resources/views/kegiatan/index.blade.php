@@ -88,7 +88,7 @@
                     <td id="col_tanggal_mulai">{{ $proyek->tanggal_mulai }}</td>
                     <td id="target_selesai" style="text-align: center">{{ $proyek->tanggal_target_selesai }}</td>
                     <td id="col_status"></td>
-                    <td id="col_tombol_detail"><a href="{{ route('kegiatan.show', ['id' => $proyek->kode_kegiatan]) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
+                    <td id="col_tombol_detail"><a href="{{ route('kegiatan.show', $proyek->kode_kegiatan) }}" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Detail</a></td>
                     <td class="hidden">{{ $proyek->tanggal_mulai }}</td>
                     <td class="hidden">{{ $proyek->id_pemilik_kegiatan }}</td>
                     <td class="hidden">{{ $proyek->tanggal_realisasi }}</td>

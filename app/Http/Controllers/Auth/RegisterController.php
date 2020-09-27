@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Jabatan;
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Providers\RouteServiceProvider;
+use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -30,31 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
-
-//    public function redirectPath()
-//    {
-//        $uid = Auth::user()->getAuthIdentifier();
-//
-//        if($uid == '1')
-//        {
-//            return redirect('home');
-//        }
-//        else{
-//            return redirect('/');
-//        }
-//    }
-//
-//    protected function authenticated(Request $request, $user)
-//    {
-//        if($user->hasRole('administrator'))
-//        {
-//            return redirect('home');
-//        }
-//        else{
-//            return redirect('/');
-//        }
-//    }
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -75,12 +50,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'id' => 'required|string|max:255',
-            'name' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|confirmed',
-            'alamat' => 'required|string|max:255',
-            'telepon' => 'required|string|max:15'
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -88,30 +60,14 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
-//        return User::create([
-//            'id' => $data['id'],
-//            'name' => $data['name'],
-//            'email' => $data['email'],
-//            'password' => bcrypt($data['password']),
-//            'alamat' => $data['alamat'],
-//            'telepon' => $data['telepon']
-//        ]);
-
-        $user = new User();
-        $user->id = $data['id'];
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-        $user->password = bcrypt($data['password']);
-        $user->alamat = $data['alamat'];
-        $user->telepon = $data['telepon'];
-        $user->save();
-
-        $user->jabatan()->attach(Jabatan::where('nama_jabatan', 'administrator')->first());
-
-        return $user;
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
     }
 }

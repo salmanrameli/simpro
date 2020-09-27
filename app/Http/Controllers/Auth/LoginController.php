@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Log;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -41,17 +41,12 @@ class LoginController extends Controller
         }
     }
 
-    public function username()
-    {
-        return 'id';
-    }
-
-//    /**
-//     * Where to redirect users after login.
-//     *
-//     * @var string
-//     */
-//    protected $redirectTo = '/kegiatan';
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+//    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.

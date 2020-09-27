@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Dokumen;
-use App\Kegiatan_Subtask;
-use App\Subtask_Anggota;
+use App\Models\Dokumen;
+use App\Models\Kegiatan_Subtask;
+use App\Models\Subtask_Anggota;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
