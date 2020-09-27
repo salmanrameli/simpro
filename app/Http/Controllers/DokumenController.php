@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Dokumen;
-use App\Log;
+use App\Models\Dokumen;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

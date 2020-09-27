@@ -59,11 +59,11 @@
                         @endif
                     </tbody>
                 </table>
-                <a href="{{ route('kegiatan.edit', ['id' => $kode]) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Kegiatan</a>
+                <a href="{{ route('kegiatan.edit', $kode) }}" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-edit"></span> Ubah Kegiatan</a>
                 @if($deskripsi->tanggal_realisasi != '0000-00-00')
-                    <a href="{{ route('kegiatan.belum_selesai', ['id' => $kode]) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai kegiatan belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Kegiatan Belum Selesai</a>
+                    <a href="{{ route('kegiatan.belum_selesai', $kode) }}" class="btn btn-danger pull-right" onclick="return confirm('Tandai kegiatan belum selesai?')"><span class="glyphicon glyphicon-warning-sign"></span>Tandai Kegiatan Belum Selesai</a>
                     @elseif($deskripsi->tanggal_realisasi == '0000-00-00')
-                    <a href="{{ route('kegiatan.tandai_selesai', ['id' => $kode]) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai kegiatan selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
+                    <a href="{{ route('kegiatan.tandai_selesai', $kode) }}" class="btn btn-primary pull-right" onclick="return confirm('Tandai kegiatan selesai?')"><span class="glyphicon glyphicon-ok"></span> Tandai Selesai</a>
                 @endif
             </div>
         </div>

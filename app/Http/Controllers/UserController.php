@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Log;
-use App\User;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +45,7 @@ class UserController extends Controller
         {
             Session::flash('message', $message);
 
-            return redirect()->route('administrator.index');
+            return redirect()->route('administrator.home');
         }
         else if($role == '2')
         {

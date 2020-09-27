@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\AdministratorController;
+use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KadivController;
+use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\KegiatanSubtaskController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,139 +20,81 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
+//    return view('welcome');
 });
 
 Auth::routes();
 
-Route::get('/home', 'UserController@index')->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::resource('user', 'UserController');
-
-Route::get('administrator/manajemen_user', [
-    'as' => 'user.manajemen',
-    'uses' => 'UserController@home'
+Route::resources([
+    'user' => UserController::class,
+    'kegiatan' => KegiatanController::class,
+    'subtask' => KegiatanSubtaskController::class,
+    'dokumen' => DokumenController::class
 ]);
 
-Route::get('/user/{id}/ubah_password', [
-    'as' => 'user.update_password',
-    'uses' => 'UserController@ubah_password'
-]);
+Route::get('administrator/manajemen_user', [UserController::class, 'home'])->name('user.manajemen');
 
-Route::post('/user/ubah_password', function(\Illuminate\Http\Request $request){})->name('user.simpan_password')->uses('UserController@simpan_password');
+Route::get('/user/{id}/ubah_password', [UserController::class, 'ubah_password'])->name('user.update_password');
 
-Route::resource('kegiatan', 'KegiatanController');
+Route::post('/user/ubah_password', [UserController::class, 'simpan_password'])->name('user.simpan_password');
 
-Route::get('kegiatan/{id}/hapus_anggota', [
-    'as' => 'kegiatan.anggota',
-    'uses' => 'KegiatanController@anggota_proyek'
-]);
+Route::get('kegiatan/{id}/hapus_anggota', [KegiatanController::class, 'index'])->name('kegiatan.anggota');
 
-Route::get('kegiatan/tandai_selesai/{id}', [
-    'as' => 'kegiatan.tandai_selesai',
-    'uses' => 'KegiatanController@tandai_selesai'
-]);
+Route::get('kegiatan/tandai_selesai/{id}', [KegiatanController::class, 'tandai_selesai'])->name('kegiatan.tandai_selesai');
 
-Route::get('kegiatan/belum_selesai/{id}', [
-    'as' => 'kegiatan.belum_selesai',
-    'uses' => 'KegiatanController@belum_selesai'
-]);
+Route::get('kegiatan/belum_selesai/{id}', [KegiatanController::class, 'belum_selesai'])->name('kegiatan.belum_selesai');
 
-Route::get('cari', [
-    'as' => 'kegiatan.cari',
-    'uses' => 'KegiatanController@cari'
-]);
+Route::get('cari', [KegiatanController::class, 'cari'])->name('kegiatan.cari');
 
-Route::get('tanggal', [
-    'as' => 'kegiatan.cari_tanggal',
-    'uses' => 'KegiatanController@cari_tanggal'
-]);
+Route::get('tanggal', [KegiatanController::class, 'cari_tanggal'])->name('kegiatan.cari_tanggal');
 
-Route::post('kegiatan/{id}/tambah_anggota', function(\Illuminate\Http\Request $request){})->name('kegiatan.tambah_anggota_proyek')->uses('KegiatanController@tambah_anggota_proyek');
+Route::post('kegiatan/{id}/tambah_anggota', [KegiatanController::class, 'tambah_anggota_proyek'])->name('kegiatan.tambah_anggota_proyek');
 
-Route::get('kegiatan/{id}/hapus_anggota/{kode}')->name('kegiatan.hapus_anggota')->uses('KegiatanController@hapus_anggota_proyek');
+Route::get('kegiatan/{id}/hapus_anggota/{kode}', [KegiatanController::class, 'hapus_anggota_proyek'])->name('kegiatan.hapus_anggota');
 
-Route::resource('subtask', 'KegiatanSubtaskController');
+Route::get('subtask/{id}/kerjakan', [KegiatanSubtaskController::class, 'kerjakan'])->name('subtask.kerjakan');
 
-Route::get('subtask/{id}/kerjakan', [
-    'as' => 'subtask.kerjakan',
-    'uses' => 'KegiatanSubtaskController@kerjakan'
-]);
+Route::get('subtask/{id}/pindah_kanan', [KegiatanSubtaskController::class, 'pindah_kanan'])->name('subtask.pindah_kanan');
 
-Route::get('subtask/{id}/pindah_kanan', [
-    'as' => 'subtask.pindah_kanan',
-    'uses' => 'KegiatanSubtaskController@pindah_kanan'
-]);
+Route::get('subtask/{id}/pindah_kiri', [KegiatanSubtaskController::class, 'pindah_kiri'])->name('subtask.pindah_kiri');
 
-Route::get('subtask/{id}/pindah_kiri', [
-    'as' => 'subtask.pindah_kiri',
-    'uses' => 'KegiatanSubtaskController@pindah_kiri'
-]);
-
-Route::get('subtask/{id}/destroy', [
-    'as' => 'subtask.destroy',
-    'uses' => 'KegiatanSubtaskController@destroy'
-]);
+Route::get('subtask/{id}/destroy', [KegiatanSubtaskController::class, 'destroy'])->name('subtask.destroy');
 
 Route::group(['middleware' => 'checkRole:1'], function () {
-    Route::resource('administrator', 'AdministratorController');
+    Route::resource('administrator', AdministratorController::class);
 
-    Route::get('/administrator/{id}/ubah_password', [
-        'as' => 'administrator.ubah_password',
-        'uses' => 'AdministratorController@ubah_password'
-    ]);
+    Route::get('/administrator/{id}/ubah_password', [AdministratorController::class, 'ubah_password'])->name('administrator.ubah_password');
 
-    Route::get('user/create', [
-        'as' => 'user.create',
-        'uses' => 'UserController@create'
-    ]);
+    Route::get('user/create', [UserController::class, 'create'])->name('user.create');
 
-    Route::post('user', [
-        'as' => 'user.store',
-        'uses' => 'UserController@store'
-    ]);
+    Route::post('user', [UserController::class, 'store'])->name('user.store');
 
-    Route::get('administrator/user/{id}/show', [
-        'as' => 'user.detail',
-        'uses' => 'UserController@user_detail'
-    ]);
+    Route::get('administrator/user/{id}/show', [UserController::class, 'user_detail'])->name('user.detail');
 });
 
 Route::group(['middleware' => 'checkRole:2'], function () {
-    Route::resource('kadiv', 'KadivController');
+    Route::resource('kadiv', KadivController::class);
 
-    Route::get('/kadiv/{id}/ubah_password', [
-        'as' => 'kadiv.ubah_password',
-        'uses' => 'KadivController@ubah_password'
-    ]);
+    Route::get('/kadiv/{id}/ubah_password', [KadivController::class, 'ubah_password'])->name('kadiv.ubah_password');
 });
 
 Route::group(['middleware' => 'checkRole:3'], function () {
-    Route::resource('pegawai', 'PegawaiController');
+    Route::resource('pegawai', PegawaiController::class);
 
-    Route::get('/pegawai/{id}/ubah_password', [
-        'as' => 'pegawai.ubah_password',
-        'uses' => 'PegawaiController@ubah_password'
-    ]);
+    Route::get('/pegawai/{id}/ubah_password', [PegawaiController::class, 'ubah_password'])->name('pegawai.ubah_password');
 });
 
-Route::resource('dokumen', 'DokumenController');
+Route::get('dokumen/{id}-{kode}/download', [DokumenController::class, 'download'])->name('dokumen.download');
 
-Route::get('dokumen/{id}-{kode}/download', [
-    'as' => 'dokumen.download',
-    'uses' => 'DokumenController@download'
-]);
+Route::get('dokumen/{id}-{kode}/show', [DokumenController::class, 'show'])->name('dokumen.show');
 
-Route::get('dokumen/{id}-{kode}/show', [
-    'as' => 'dokumen.show',
-    'uses' => 'DokumenController@show'
-]);
+Route::get('dokumen/{id}-{kode}/destroy', [DokumenController::class, 'destroy'])->name('dokumen.destroy');
 
-Route::get('dokumen/{id}-{kode}/destroy', [
-    'as' => 'dokumen.destroy',
-    'uses' => 'DokumenController@destroy'
-]);
-
-
-
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return Inertia\Inertia::render('Dashboard');
+})->name('dashboard');

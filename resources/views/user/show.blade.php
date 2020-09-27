@@ -42,8 +42,8 @@
                     {{--<td>{{ $user->jabatan->nama_jabatan }}</td>--}}
                 {{--</tr>--}}
             </table>
-            <a href="{{ route('user.edit', ['id' => $user->id]) }}" class="btn btn-warning">Ubah Profil</a>
-            <a href="{{ route('user.update_password', ['id' => $user->id]) }}" class="btn btn-default pull-right">Ubah Password</a>
+            <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning">Ubah Profil</a>
+            <a href="{{ route('user.update_password', $user->id) }}" class="btn btn-default pull-right">Ubah Password</a>
         </div>
     </div>
 @endsection

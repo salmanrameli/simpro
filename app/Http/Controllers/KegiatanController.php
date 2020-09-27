@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Log;
-use App\Kegiatan;
-use App\Kegiatan_Anggota;
+use App\Models\Kegiatan;
+use App\Models\Kegiatan_Anggota;
+use App\Models\Log;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 
 class KegiatanController extends Controller
@@ -258,7 +257,7 @@ class KegiatanController extends Controller
 
         $pegawai = DB::table('users')->where('deleted_at', null)->whereNotIn('id', $anggota_sekarang)->orderBy('name', 'asc')->get();
 
-        $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->groupBy('nama_subtask')->get();
+        $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->get();
 
         $anggota_subtask = DB::table('subtask_anggota')->join('users', 'subtask_anggota.id_pegawai', '=', 'users.id')->where('kode_kegiatan', $id)->get();
 

@@ -21,7 +21,7 @@ class CreateKegiatanTable extends Migration
             $table->text('deskripsi_kegiatan');
             $table->string('tanggal_mulai');
             $table->date('tanggal_target_selesai');
-            $table->date('tanggal_realisasi');
+            $table->date('tanggal_realisasi')->nullable();
             $table->timestamps();
         });
     }
