@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Log;
-use App\User;
+use App\Models\Log;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class KadivController extends Controller

@@ -71,7 +71,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/dashboard') }}">Dashboard</a>
                     @endif
                 </div>
             @endif
@@ -120,9 +120,6 @@
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <span class="glyphicon glyphicon-log-in"></span> Login
                                 </button>
-                                {{--<a class="btn btn-link" href="{{ route('password.request') }}">--}}
-                                    {{--Forgot Your Password?--}}
-                                {{--</a>--}}
                             </div>
                         </div>
                     </form>
