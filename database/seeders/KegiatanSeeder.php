@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
@@ -42,7 +44,7 @@ class KegiatanSeeder extends Seeder
 
             $kode_kegiatan = $tahun . $bulan . $tanggal . '-' . $index . '-' . $nama;
 
-            $proyek = new \App\Kegiatan();
+            $proyek = new \App\Models\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
             $proyek->nama_kegiatan = $catchphrase;
             $proyek->id_pemilik_kegiatan = '1';
@@ -51,19 +53,19 @@ class KegiatanSeeder extends Seeder
             $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth(2)->toDateString();
             $proyek->save();
 
-            $proyek_anggota = new \App\Kegiatan_Anggota();
+            $proyek_anggota = new \App\Models\Kegiatan();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '1';
             $proyek_anggota->save();
 
-            $proyek_anggota = new \App\Kegiatan_Anggota();
+            $proyek_anggota = new \App\Models\Kegiatan();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '2';
             $proyek_anggota->save();
 
-            $proyek_anggota = new \App\Kegiatan_Anggota();
+            $proyek_anggota = new \App\Models\Kegiatan();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '3';

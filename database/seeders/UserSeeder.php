@@ -1,8 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use App\Jabatan;
-use App\User;
 use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        $pegawai = new User();
+        $pegawai = new \App\Models\User();
         $pegawai->id = '1';
         $pegawai->name = $faker->name;
         $pegawai->email = $faker->companyEmail;
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         $pegawai->jabatan_id = '1';
         $pegawai->save();
 
-        $pegawai = new User();
+        $pegawai = new \App\Models\User();
         $pegawai->name = $faker->name;
         $pegawai->email = $faker->companyEmail;
         $pegawai->password = bcrypt('pasword');
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         $pegawai->save();
 
         foreach (range(1, 24) as $index) {
-            $pegawai = new User();
+            $pegawai = new \App\Models\User();
             $pegawai->name = $faker->name();
             $pegawai->email = $faker->companyEmail;
             $pegawai->password = bcrypt('password');
