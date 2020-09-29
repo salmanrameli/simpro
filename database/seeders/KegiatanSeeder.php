@@ -46,26 +46,26 @@ class KegiatanSeeder extends Seeder
 
             $proyek = new \App\Models\Kegiatan();
             $proyek->kode_kegiatan = $kode_kegiatan;
-            $proyek->nama_kegiatan = $catchphrase;
+            $proyek->nama_kegiatan = $faker->paragraph(1);
             $proyek->id_pemilik_kegiatan = '1';
             $proyek->deskripsi_kegiatan = $catchphrase;
             $proyek->tanggal_mulai = \Carbon\Carbon::now()->toDateString();
             $proyek->tanggal_target_selesai = \Carbon\Carbon::now()->addMonth(2)->toDateString();
             $proyek->save();
 
-            $proyek_anggota = new \App\Models\Kegiatan();
+            $proyek_anggota = new \App\Models\Kegiatan_Anggota();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '1';
             $proyek_anggota->save();
 
-            $proyek_anggota = new \App\Models\Kegiatan();
+            $proyek_anggota = new \App\Models\Kegiatan_Anggota();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '2';
             $proyek_anggota->save();
 
-            $proyek_anggota = new \App\Models\Kegiatan();
+            $proyek_anggota = new \App\Models\Kegiatan_Anggota();
             $proyek_anggota->kode_kegiatan = $kode_kegiatan;
             $proyek_anggota->nama_kegiatan = $catchphrase;
             $proyek_anggota->id_pegawai = '3';
