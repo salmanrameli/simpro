@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index()
     {
@@ -68,7 +69,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -79,7 +80,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -128,27 +129,21 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $role = DB::table('users')->where('id', $id)->value('jabatan_id');
 
         if($role == '1')
         {
-            return redirect()->action('AdministratorController@show', ['id' => $id]);
+            return redirect()->action([AdministratorController::class, 'show'], $id);
         }
         else if($role == '2')
         {
-            return redirect()->action('KadivController@show', ['id' => $id]);
+            return redirect()->action([KadivController::class, 'show'], $id);
         }
         else if($role == '3')
         {
-            return redirect()->action('PegawaiController@show', ['id' => $id]);
+            return redirect()->action([PegawaiController::class, 'show'], $id);
         }
     }
 
@@ -156,7 +151,7 @@ class UserController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
@@ -164,15 +159,15 @@ class UserController extends Controller
 
         if($role == '1')
         {
-            return redirect()->action('AdministratorController@edit', ['id' => $id]);
+            return redirect()->action([AdministratorController::class, 'edit'], $id);
         }
         else if($role == '2')
         {
-            return redirect()->action('KadivController@edit', ['id' => $id]);
+            return redirect()->action([KadivController::class, 'edit'], $id);
         }
         else if($role == '3')
         {
-            return redirect()->action('PegawaiController@edit', ['id' => $id]);
+            return redirect()->action([PegawaiController::class, 'edit'], $id);
         }
     }
 
@@ -192,7 +187,7 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
@@ -202,7 +197,7 @@ class UserController extends Controller
 
         Session::flash('message', 'Akun berhasil dihapus');
 
-        return redirect()->action('UserController@home');
+        return redirect()->action([UserController::class, 'home']);
     }
 
     public function ubah_password($id)
@@ -211,15 +206,15 @@ class UserController extends Controller
 
         if($role == '1')
         {
-            return redirect()->action('AdministratorController@ubah_password', ['id' => $id]);
+            return redirect()->action([AdministratorController::class, 'ubah_password'], $id);
         }
         else if($role == '2')
         {
-            return redirect()->action('KadivController@ubah_password', ['id' => $id]);
+            return redirect()->action([KadivController::class, 'ubah_password'], $id);
         }
         else if($role == '3')
         {
-            return redirect()->action('PegawaiController@ubah_password', ['id' => $id]);
+            return redirect()->action([PegawaiController::class, 'ubah_password'], $id);
         }
     }
 

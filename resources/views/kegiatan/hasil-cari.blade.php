@@ -146,7 +146,7 @@
 
             if(tanggal_mulai !== '0000-00-00' && target_selesai !== '0000-00-00')
             {
-                if((curdate > target_selesai) && (tanggal_realisasi === '0000-00-00'))
+                if((curdate > target_selesai) && (tanggal_realisasi === ''))
                 {
                     var selisih = (new Date(curdate) - new Date(target_selesai))/oneDay;
 
@@ -171,7 +171,7 @@
                     }
 
                 }
-                else if(tanggal_realisasi !== '0000-00-00')
+                else if(tanggal_realisasi !== '')
                 {
                     $(this).find('td').eq(x).html('<td style="text-align:center;padding: 6px; background-color: #4cd12c; color:white;" width="100px"> Selesai</td>');
                 }

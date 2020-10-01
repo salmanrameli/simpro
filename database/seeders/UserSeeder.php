@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $pegawai = new \App\Models\User();
         $pegawai->name = $faker->name;
         $pegawai->email = $faker->companyEmail;
-        $pegawai->password = bcrypt('pasword');
+        $pegawai->password = bcrypt('password');
         $pegawai->alamat = $faker->address;
         $pegawai->telepon = $faker->phoneNumber;
         $pegawai->jabatan_id = '2';

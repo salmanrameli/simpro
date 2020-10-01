@@ -22,13 +22,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
-//    return view('welcome');
+    return view('welcome');
 });
 
-Auth::routes();
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::post('login', [\App\Http\Controllers\LoginController::class, 'login'])->name('login');
 
 Route::resources([
     'user' => UserController::class,
@@ -69,8 +68,6 @@ Route::group(['middleware' => 'checkRole:1'], function () {
     Route::resource('administrator', AdministratorController::class);
 
     Route::get('/administrator/{id}/ubah_password', [AdministratorController::class, 'ubah_password'])->name('administrator.ubah_password');
-
-    Route::get('user/create', [UserController::class, 'create'])->name('user.create');
 
     Route::post('user', [UserController::class, 'store'])->name('user.store');
 
