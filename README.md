@@ -15,7 +15,7 @@ Built based on feedbacks from my field supervisor during internship at BRI Prima
 3. Run `composer install` to install dependencies
 4. Run `cp .env.example .env` then change the relevant .env parameters, e.g. DB_HOST, DB_PORT, etc.
 5. Run `php artisan migrate` to migrate tables to database
-6. Run `php artisan db:seed` to fill the tables with dummy data - optional.
+6. Run `php artisan db:seed` to fill the tables with dummy data - this step is optional
 
 ## Several Screenshots of the App
 ![Dashboard](https://raw.githubusercontent.com/salmanrameli/simpro/master/dashboard.png)
