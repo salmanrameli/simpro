@@ -1,13 +1,21 @@
 # SIMPRO
-Sistem Informasi Monitoring Proyek
+Sistem Informasi Monitoring Proyek / Project Management Information System
 
 ## Explanation
 Built based on feedbacks from my field supervisor during internship at BRI Primary Satellite Control Facility. The web applications offers several features such as:
 - Ability to create new project and add personnel members to the project.
 - Add and edit subtasks for the project.
 - Show overall project’s progress based on the subtasks done and on-progress ratio.
-- Change subtasks status between New, Ongoing, Finished, and Revision (a la Bitrix24 Kanban board).
-- Upload files in the project page
+- Change subtasks status between To-Do, In-Progress, Finished, and Revision (a la Bitrix24 Kanban board).
+- Upload & download files in the project page
+
+## Installation
+1. Download then extract the program
+2. `cd` inside extracted folder (default folder name is simpro)
+3. Run `composer install` to install dependencies
+4. Run `cp .env.example .env` then change the relevant .env parameters, e.g. DB_HOST, DB_PORT, etc.
+5. Run `php artisan migrate` to migrate tables to database
+6. Run `php artisan db:seed` to fill the tables with dummy data - optional.
 
 ## Several Screenshots of the App
 ![Dashboard](https://raw.githubusercontent.com/salmanrameli/simpro/master/dashboard.png)
