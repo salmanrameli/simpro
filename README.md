@@ -5,21 +5,30 @@ Sistem Informasi Monitoring Proyek
 Built based on feedbacks from my field supervisor during internship at BRI Primary Satellite Control Facility. The web applications offers several features such as:
 - Ability to create new project and add personnel members to the project.
 - Add and edit subtasks for the project.
-- Show overall project’s progress based on the subtasks done and on-
-progress ratio.
+- Show overall project’s progress based on the subtasks done and on-progress ratio.
 - Change subtasks status between New, Ongoing, Finished, and Revision (a la Bitrix24 Kanban board).
-- Upload files and write messages in the project page (a la Facebook’s Wall)
+- Upload files in the project page
 
 ## Several Screenshots of the App
-![Dashboard](https://raw.githubusercontent.com/salmanrameli/simpro/update-laravel-8/dashboard.png)
+![Dashboard](https://raw.githubusercontent.com/salmanrameli/simpro/master/dashboard.png)
 
-![List User](https://raw.githubusercontent.com/salmanrameli/simpro/update-laravel-8/user.png)
+![List User](https://raw.githubusercontent.com/salmanrameli/simpro/master/list-user.png)
 
-![Add User](https://raw.githubusercontent.com/salmanrameli/simpro/update-laravel-8/add-user.png)
+![Add User](https://raw.githubusercontent.com/salmanrameli/simpro/master/add-user.png)
 
-![List Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/update-laravel-8/list-kegiatan.png)
+![List Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/master/list-kegiatan.png)
 
-![Detail Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/update-laravel-8/kegiatan.png)
+![Tambah Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/master/kegiatan-tambah.png)
+
+![Detail Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/master/detail-kegiatan.png)
+
+![Tambah Subtask](https://raw.githubusercontent.com/salmanrameli/simpro/master/subtask-tambah.png)
+
+![List Anggota Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/master/kegiatan-pic.png)
+
+![Upload Dokumen](https://raw.githubusercontent.com/salmanrameli/simpro/master/kegiatan-upload.png)
+
+![List Dokumen Kegiatan](https://raw.githubusercontent.com/salmanrameli/simpro/master/kegiatan-dokumen.png)
 
 ## Contributing
 
