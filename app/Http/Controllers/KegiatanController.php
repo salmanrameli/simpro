@@ -210,8 +210,9 @@ class KegiatanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($kegiatan)
     {
+        $id = $kegiatan;
         /*
          * Menampilkan progress proyek.
          * Pemilik proyek dapat melihat semua informasi yang dimasukkan oleh anggota proyek.
@@ -221,37 +222,37 @@ class KegiatanController extends Controller
 
         $uid = Auth::id();
 
-        $pemilik_proyek = DB::table('kegiatan')->where('kode_kegiatan', $id)->value('id_pemilik_kegiatan');
+        $pemilik_proyek = DB::table('kegiatan')->where('id', $kegiatan)->value('id_pemilik_kegiatan');
 
-        $tugas_baru = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '0']])->latest('updated_at')->get();
+        $tugas_baru = DB::table('kegiatan_subtask')->where([['id', $kegiatan], ['status', '0']])->latest('updated_at')->get();
 
-        $deskripsi_proyek = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->where('kegiatan.kode_kegiatan', $id)->first();
+        $deskripsi_proyek = DB::table('kegiatan')->join('users', 'kegiatan.id_pemilik_kegiatan', '=', 'users.id')->where('kegiatan.id', $kegiatan)->first();
 
-        $anggota_proyek = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('kegiatan_anggota.kode_kegiatan', $id)->simplePaginate($paginate);
+        $anggota_proyek = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('users.id', 'users.name', 'users.email', 'users.telepon')->where('kegiatan_anggota.id', $kegiatan)->simplePaginate($paginate);
 
         $dokumen = DB::table('dokumen')
             ->join('users', 'dokumen.id_pegawai', '=', 'users.id')
             ->join('kegiatan_subtask', 'dokumen.id_subtask', '=', 'kegiatan_subtask.id')
-            ->select('dokumen.*', 'users.name', 'kegiatan_subtask.nama_subtask')->where('dokumen.kode_kegiatan', $id)
+            ->select('dokumen.*', 'users.name', 'kegiatan_subtask.nama_subtask')->where('dokumen.id', $kegiatan)
             ->get();
 
-        $user = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kegiatan_anggota.kode_kegiatan', $id)->orderBy('users.name', 'asc')->get();
+        $user = DB::table('kegiatan_anggota')->join('users', 'kegiatan_anggota.id_pegawai', '=', 'users.id')->select('kegiatan_anggota.*', 'users.name')->where('kegiatan_anggota.id', $kegiatan)->orderBy('users.name', 'asc')->get();
 
-        $anggota_sekarang = Kegiatan_Anggota::where('kode_kegiatan', '=', $id)->pluck('id_pegawai')->toArray();
+        $anggota_sekarang = Kegiatan_Anggota::where('id', '=', $kegiatan)->pluck('id_pegawai')->toArray();
 
         $pegawai = DB::table('users')->where('deleted_at', null)->whereNotIn('id', $anggota_sekarang)->orderBy('name', 'asc')->get();
 
-        $kegiatan = DB::table('kegiatan_subtask')->where('kode_kegiatan', $id)->get();
+        $kegiatan = DB::table('kegiatan_subtask')->where('id', $kegiatan)->get();
 
-        $anggota_subtask = DB::table('subtask_anggota')->join('users', 'subtask_anggota.id_pegawai', '=', 'users.id')->where('kode_kegiatan', $id)->get();
+        $anggota_subtask = DB::table('subtask_anggota')->join('users', 'subtask_anggota.id_pegawai', '=', 'users.id')->where('subtask_anggota.id', '1')->get();
 
         if($pemilik_proyek == $uid)
         {
-            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1']])->latest('updated_at')->get();
+            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '1']])->latest('updated_at')->get();
 
-            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2']])->latest('updated_at')->get();
+            $tugas_request = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '2']])->latest('updated_at')->get();
 
-            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3']])->latest('updated_at')->get();
+            $tugas_selesai = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '3']])->latest('updated_at')->get();
 
             return view('kegiatan.show-owner')
                 ->with('deskripsi', $deskripsi_proyek)
@@ -259,7 +260,7 @@ class KegiatanController extends Controller
                 ->with('ongoings', $tugas_ongoing)
                 ->with('requests', $tugas_request)
                 ->with('selesais', $tugas_selesai)
-                ->with('kode', $id)
+                ->with('kode', $kegiatan)
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen)
                 ->with('users', $user)
@@ -269,11 +270,11 @@ class KegiatanController extends Controller
         }
         else
         {
-            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '1']])->latest('updated_at')->get();
+            $tugas_ongoing = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '1']])->latest('updated_at')->get();
 
-            $tugas_request = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '2']])->latest('updated_at')->get();
+            $tugas_request = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '2']])->latest('updated_at')->get();
 
-            $tugas_selesai = DB::table('kegiatan_subtask')->where([['kode_kegiatan', $id], ['status', '3']])->latest('updated_at')->get();
+            $tugas_selesai = DB::table('kegiatan_subtask')->where([['id', $id], ['status', '3']])->latest('updated_at')->get();
 
             return view('kegiatan.show')
                 ->with('deskripsi', $deskripsi_proyek)
@@ -281,7 +282,7 @@ class KegiatanController extends Controller
                 ->with('ongoings', $tugas_ongoing)
                 ->with('requests', $tugas_request)
                 ->with('selesais', $tugas_selesai)
-                ->with('kode', $id)
+                ->with('kode', $kegiatan)
                 ->with('anggotas', $anggota_proyek)
                 ->with('dokumens', $dokumen)
                 ->with('users', $user)
